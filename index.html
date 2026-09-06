@@ -7,127 +7,53 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
-        .container{max-width:750px;width:100%;background:#121212;border-radius:20px;padding:35px;border:1px solid #1a1a1a;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
-        .logo{text-align:center;margin-bottom:25px}
-        .logo h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#ff0050,#00f2ea);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .logo p{color:#666;font-size:.85rem}
-        .input-group{display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap}
-        .input-group input{flex:1;padding:14px 18px;background:#1a1a1a;border:2px solid #2a2a2a;border-radius:12px;color:#fff;font-size:.95rem;outline:none;min-width:200px}
-        .input-group input:focus{border-color:#ff0050}
-        .btn-fetch{padding:14px 28px;background:linear-gradient(135deg,#ff0050,#ff2d55);border:none;border-radius:12px;color:#fff;font-weight:700;font-size:.95rem;cursor:pointer}
-        .btn-fetch:hover{transform:scale(1.02)}
-        .loading{text-align:center;padding:20px;display:none}
-        .loading .spinner{width:40px;height:40px;border:4px solid #1a1a1a;border-top:4px solid #ff0050;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px}
-        @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-        .result{display:none;margin-top:25px;animation:fadeIn .5s ease}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        .video-wrapper{border-radius:16px;overflow:hidden;background:#1a1a1a;margin-bottom:15px}
-        .video-wrapper video{width:100%;max-height:600px;display:block}
-        .info{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid #1a1a1a;flex-wrap:wrap;gap:10px}
-        .info .title{font-size:.9rem;color:#aaa;flex:1;min-width:150px}
-        .info .title strong{color:#fff;display:block}
-        .btn-save{padding:12px 28px;background:linear-gradient(135deg,#00f2ea,#00d4d4);border:none;border-radius:12px;color:#0a0a0a;font-weight:700;font-size:.9rem;cursor:pointer}
-        .btn-save:hover{transform:scale(1.02)}
-        .error{display:none;background:rgba(255,0,0,0.1);border:1px solid #ff0050;border-radius:12px;padding:15px 20px;color:#ff6666;text-align:center;margin-top:15px}
-        .error.show{display:block}
-        .footer{text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #1a1a1a;font-size:.75rem;color:#444}
-        .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid #00f2ea;color:#00f2ea;padding:14px 28px;border-radius:12px;font-size:.9rem;z-index:9999;box-shadow:0 10px 40px rgba(0,0,0,0.8);animation:fadeIn .3s ease;max-width:90%;text-align:center}
-        @media(max-width:600px){.container{padding:25px}.input-group{flex-direction:column}.btn-fetch{width:100%}}
+        .container{max-width:750px;width:100%;background:#121212;border-radius:20px;padding:35px;border:1px solid #1a1a1a;box-shadow:0 20px 60px rgba(0,0,0,.8)}
+        .logo{text-align:center;margin-bottom:25px}.logo h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#ff0050,#00f2ea);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.logo p{color:#666;font-size:.85rem}
+        .input-group{display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap}.input-group input{flex:1;padding:14px 18px;background:#1a1a1a;border:2px solid #2a2a2a;border-radius:12px;color:#fff;font-size:.95rem;outline:none;min-width:200px}.input-group input:focus{border-color:#ff0050}
+        .btn-fetch{padding:14px 28px;background:linear-gradient(135deg,#ff0050,#ff2d55);border:none;border-radius:12px;color:#fff;font-weight:700;font-size:.95rem;cursor:pointer}.btn-fetch:hover{transform:scale(1.02)}
+        .loading{text-align:center;padding:20px;display:none}.loading .spinner{width:40px;height:40px;border:4px solid #1a1a1a;border-top:4px solid #ff0050;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px}@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+        .result{display:none;margin-top:25px;animation:fadeIn .5s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.video-wrapper{border-radius:16px;overflow:hidden;background:#1a1a1a;margin-bottom:15px}.video-wrapper video{width:100%;max-height:600px;display:block}
+        .info{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid #1a1a1a;flex-wrap:wrap;gap:10px}.info .title{font-size:.9rem;color:#aaa;flex:1;min-width:150px}.info .title strong{color:#fff;display:block}.btn-save{padding:12px 28px;background:linear-gradient(135deg,#00f2ea,#00d4d4);border:none;border-radius:12px;color:#0a0a0a;font-weight:700;font-size:.9rem;cursor:pointer}
+        .error{display:none;background:rgba(255,0,0,.1);border:1px solid #ff0050;border-radius:12px;padding:15px 20px;color:#ff6666;text-align:center;margin-top:15px}.error.show{display:block}.footer{text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #1a1a1a;font-size:.75rem;color:#444}.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid #00f2ea;color:#00f2ea;padding:14px 28px;border-radius:12px;font-size:.9rem;z-index:9999;max-width:90%;text-align:center}@media(max-width:600px){.container{padding:25px}.input-group{flex-direction:column}.btn-fetch{width:100%}}
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo"><h1>🎵 TikTok Downloader</h1><p>Download video TikTok tanpa watermark</p></div>
-        <div class="input-group">
-            <input type="text" id="urlInput" placeholder="Masukkan URL TikTok..." value="https://www.tiktok.com/@oldmanesp.ueo/video/7680621875571084565">
-            <button class="btn-fetch" id="btnFetch">📥 Proses</button>
-        </div>
-        <div class="loading" id="loading"><div class="spinner"></div><p>Mengambil video...</p></div>
-        <div class="error" id="error"></div>
-        <div class="result" id="result">
-            <div class="video-wrapper"><video id="videoPlayer" controls controlslist="nodownload"></video></div>
-            <div class="info">
-                <div class="title"><strong id="videoTitle">Judul Video</strong><span id="videoAuthor">@username</span></div>
-                <button class="btn-save" id="btnSave">💾 Download Video</button>
-            </div>
-        </div>
-        <div class="footer"><p>Download video TikTok tanpa watermark • Untuk keperluan pribadi</p></div>
+<div class="container">
+    <div class="logo"><h1>🎵 TikTok Downloader</h1><p>Download video TikTok tanpa watermark</p></div>
+    <div class="input-group"><input type="text" id="urlInput" placeholder="Masukkan URL TikTok..."><button class="btn-fetch" id="btnFetch">📥 Proses</button></div>
+    <div class="loading" id="loading"><div class="spinner"></div><p>Mengambil video...</p></div>
+    <div class="error" id="error"></div>
+    <div class="result" id="result">
+        <div class="video-wrapper"><video id="videoPlayer" controls></video></div>
+        <div class="info"><div class="title"><strong id="videoTitle">Judul Video</strong><span id="videoAuthor">@username</span></div><button class="btn-save" id="btnSave">💾 Download Video</button></div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded',function(){
-            const urlInput=document.getElementById('urlInput');
-            const btnFetch=document.getElementById('btnFetch');
-            const loading=document.getElementById('loading');
-            const result=document.getElementById('result');
-            const error=document.getElementById('error');
-            const videoPlayer=document.getElementById('videoPlayer');
-            const videoTitle=document.getElementById('videoTitle');
-            const videoAuthor=document.getElementById('videoAuthor');
-            const btnSave=document.getElementById('btnSave');
-            let currentVideoUrl='';
-            function showToast(msg){
-                const t=document.createElement('div');
-                t.className='toast';
-                t.textContent=msg;
-                document.body.appendChild(t);
-                setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),500);},3000);
-            }
-            async function fetchVideo(){
-                const url=urlInput.value.trim();
-                if(!url){error.textContent='⚠️ Masukkan URL!';error.classList.add('show');return;}
-                loading.style.display='block';
-                result.style.display='none';
-                error.classList.remove('show');
-                btnFetch.disabled=true;
-                btnFetch.textContent='⏳...';
-                try{
-                    const response=await fetch(`/api/tiktok?url=${encodeURIComponent(url)}`);
-                    const data=await response.json();
-                    if(!data.success||!data.video_url)throw new Error(data.error||'Video tidak ditemukan');
-                    currentVideoUrl=data.video_url;
-                    videoPlayer.src=data.video_url;
-                    videoPlayer.load();
-                    videoTitle.textContent=data.title||'TikTok Video';
-                    videoAuthor.textContent=data.author||'@unknown';
-                    result.style.display='block';
-                    loading.style.display='none';
-                    showToast('✅ Video siap!');
-                }catch(err){
-                    loading.style.display='none';
-                    error.textContent='⚠️ '+err.message;
-                    error.classList.add('show');
-                }finally{
-                    btnFetch.disabled=false;
-                    btnFetch.textContent='📥 Proses';
-                }
-            }
-            function downloadVideo(){
-                if(!currentVideoUrl)return alert('Tidak ada video');
-                btnSave.disabled=true;
-                btnSave.textContent='⏳...';
-                fetch(currentVideoUrl).then(res=>res.blob()).then(blob=>{
-                    const a=document.createElement('a');
-                    const url=URL.createObjectURL(blob);
-                    a.href=url;
-                    a.download=`tiktok_${Date.now()}.mp4`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    showToast('✅ Video di-download!');
-                    btnSave.disabled=false;
-                    btnSave.textContent='💾 Download Video';
-                }).catch(()=>{
-                    window.open(currentVideoUrl,'_blank');
-                    showToast('⚠️ Video dibuka di tab baru');
-                    btnSave.disabled=false;
-                    btnSave.textContent='💾 Download Video';
-                });
-            }
-            btnFetch.addEventListener('click',fetchVideo);
-            btnSave.addEventListener('click',downloadVideo);
-            urlInput.addEventListener('keypress',function(e){if(e.key==='Enter'){btnFetch.click();}});
-        });
-    </script>
+    <div class="footer"><p>Download video TikTok • Untuk keperluan pribadi</p></div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+    const $=id=>document.getElementById(id), urlInput=$('urlInput'), btnFetch=$('btnFetch'), loading=$('loading'), result=$('result'), error=$('error'), videoPlayer=$('videoPlayer'), videoTitle=$('videoTitle'), videoAuthor=$('videoAuthor'), btnSave=$('btnSave');
+    let currentVideoUrl='';
+    const showError=msg=>{loading.style.display='none';error.textContent='⚠️ '+msg;error.classList.add('show');};
+    async function fetchVideo(){
+        const url=urlInput.value.trim();
+        if(!url)return showError('Masukkan URL TikTok!');
+        loading.style.display='block';result.style.display='none';error.classList.remove('show');btnFetch.disabled=true;btnFetch.textContent='⏳...';
+        try{
+            const response=await fetch(`/api/tiktok?url=${encodeURIComponent(url)}`);
+            const text=await response.text();
+            let data;
+            try{data=JSON.parse(text);}catch{throw new Error(`API mengembalikan respons bukan JSON (${response.status}).`);}
+            if(!response.ok||!data.success||!data.video_url)throw new Error(data.error||'Video tidak ditemukan');
+            currentVideoUrl=data.video_url;videoPlayer.src=currentVideoUrl;videoTitle.textContent=data.title||'TikTok Video';videoAuthor.textContent=data.author||'@unknown';result.style.display='block';
+        }catch(err){showError(err.message);}finally{loading.style.display='none';btnFetch.disabled=false;btnFetch.textContent='📥 Proses';}
+    }
+    async function downloadVideo(){
+        if(!currentVideoUrl)return;
+        btnSave.disabled=true;btnSave.textContent='⏳...';
+        try{const res=await fetch(currentVideoUrl);if(!res.ok)throw new Error();const blob=await res.blob();const a=document.createElement('a');const objectUrl=URL.createObjectURL(blob);a.href=objectUrl;a.download=`tiktok_${Date.now()}.mp4`;a.click();URL.revokeObjectURL(objectUrl);}catch{window.open(currentVideoUrl,'_blank');}finally{btnSave.disabled=false;btnSave.textContent='💾 Download Video';}
+    }
+    btnFetch.addEventListener('click',fetchVideo);btnSave.addEventListener('click',downloadVideo);urlInput.addEventListener('keypress',e=>{if(e.key==='Enter')fetchVideo();});
+});
+</script>
 </body>
 </html>
