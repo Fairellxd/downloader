@@ -1,2 +1,2 @@
 # downloader
-ada tiktok,ada bnyk lah bingung gwe
+next sosmed tunggu aj
