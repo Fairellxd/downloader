@@ -40,15 +40,11 @@ export default async function handler(req, res) {
 
         const data = result.data;
         const mediaUrl = format === 'mp4'
-            ? (data.hdplay || data.play || data.wmplay)
-            : (data.music || data.music_info?.play || data.music_info?.url || data.music_info?.music);
+            ? (data.hdplay || data.play)
+            : (data.music || data.music_info?.play);
 
-        if (typeof mediaUrl !== 'string' || !/^https?:\/\//i.test(mediaUrl)) {
-            return res.status(404).json({
-                error: format === 'mp4'
-                    ? 'URL video MP4 tidak tersedia dari layanan TikTok.'
-                    : 'URL audio MP3 tidak tersedia dari layanan TikTok.'
-            });
+        if (!mediaUrl) {
+            return res.status(404).json({ error: `URL ${format.toUpperCase()} tidak ditemukan.` });
         }
 
         return res.status(200).json({
@@ -56,7 +52,6 @@ export default async function handler(req, res) {
             platform: 'tiktok',
             format,
             media_url: mediaUrl,
-            filename: `tiktok_${data.id || Date.now()}.${format}`,
             title: data.title || 'TikTok',
             author: data.author?.unique_id ? `@${data.author.unique_id}` : '@unknown'
         });
