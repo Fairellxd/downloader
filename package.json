@@ -1,0 +1,7 @@
+{
+  "name": "rellify",
+  "private": true,
+  "dependencies": {
+    "@vercel/functions": "latest"
+  }
+}
