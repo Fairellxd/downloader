@@ -1,0 +1,1 @@
+document.querySelectorAll('[data-game="flappy"] h2').forEach(el=>el.textContent='🐤 Flappy Bird');document.querySelector('#flappy h2')?.replaceChildren(document.createTextNode('🐤 Flappy Bird'));
