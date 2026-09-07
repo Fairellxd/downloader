@@ -1,53 +1,9 @@
 <!doctype html>
 <html lang="id">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rellify • Daftar</title>
-<style>
-:root{--bg:#08090d;--card:#11131a;--card2:#191c25;--text:#fff;--muted:#8b91a1;--border:#292d3a;--accent:#8b5cf6;--danger:#ef4444;--ok:#22c55e}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--bg);color:var(--text);font-family:Segoe UI,Arial,sans-serif}.box{width:min(420px,100%);padding:28px;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 70px #0008}.logo{text-align:center;font-size:2.3rem;font-weight:900}.sub{text-align:center;color:var(--muted);margin:8px 0 24px}label{display:block;margin:14px 0 7px;font-weight:700}input{width:100%;padding:13px;border:1px solid var(--border);border-radius:10px;background:var(--card2);color:var(--text);font-size:1rem;outline:none}input:focus{border-color:var(--accent)}button{width:100%;margin-top:18px;padding:13px;border:0;border-radius:10px;background:var(--accent);color:#fff;font-weight:900;font-size:1rem;cursor:pointer}.msg{min-height:22px;margin-top:14px;text-align:center;color:var(--muted)}.error{color:var(--danger)}.ok{color:var(--ok)}.links{text-align:center;margin-top:18px;color:var(--muted)}a{color:#b89cff;text-decoration:none}.back{display:block;text-align:center;margin-top:12px;color:var(--muted)}.note{font-size:.82rem;color:var(--muted);margin-top:10px;line-height:1.5}
-</style>
-</head>
-<body>
-<main class="box">
-<div class="logo">🚀 Rellify</div>
-<div class="sub">Buat akun untuk ikut leaderboard global.</div>
-<form id="form">
-<label for="username">Username</label>
-<input id="username" maxlength="20" autocomplete="username" required placeholder="Username kamu">
-<label for="password">Password</label>
-<input id="password" type="password" minlength="6" autocomplete="new-password" required placeholder="Minimal 6 karakter">
-<label for="password2">Ulangi Password</label>
-<input id="password2" type="password" minlength="6" autocomplete="new-password" required placeholder="Ulangi password">
-<button id="submit" type="submit">✨ Daftar</button>
-</form>
-<div class="msg" id="msg"></div>
-<div class="links">Sudah punya akun? <a href="login.html">Login</a></div>
-<div class="note">Jangan gunakan password yang sama dengan akun penting lainnya.</div>
-<a class="back" href="index.html">← Kembali ke Rellify</a>
-</main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL='https://ibduionwnepqhmluddnp.supabase.co';
-const SUPABASE_KEY='sb_publishable_u6YxLEe-Rvf0Xkc4aeqODA_Fj-oR19J';
-const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const $=id=>document.getElementById(id);
-function emailFor(u){return u.trim().toLowerCase()+'@users.rellify.local'}
-$('form').addEventListener('submit',async e=>{
- e.preventDefault(); $('msg').textContent='Membuat akun...'; $('msg').className='msg'; $('submit').disabled=true;
- const username=$('username').value.trim().replace(/\s+/g,' '), password=$('password').value, password2=$('password2').value;
- if(!/^[A-Za-z0-9_.-]{2,20}$/.test(username)){ $('msg').textContent='Username hanya boleh huruf, angka, _, ., - (2-20 karakter).';$('msg').className='msg error';$('submit').disabled=false;return }
- if(password!==password2){$('msg').textContent='Password tidak sama.';$('msg').className='msg error';$('submit').disabled=false;return}
- const {data:exists,error:existsError}=await supabase.rpc('username_exists',{p_username:username});
- if(existsError){$('msg').textContent='Gagal mengecek username.';$('msg').className='msg error';$('submit').disabled=false;return}
- if(exists){$('msg').textContent='Username sudah dipakai.';$('msg').className='msg error';$('submit').disabled=false;return}
- const {data,error}=await supabase.auth.signUp({email:emailFor(username),password,options:{data:{username}}});
- if(error){$('msg').textContent=error.message;$('msg').className='msg error';$('submit').disabled=false;return}
- localStorage.setItem('rellifyUsername',username);
- if(data.session){$('msg').textContent='Akun berhasil dibuat!';$('msg').className='msg ok';setTimeout(()=>location.href='games.html',500)}
- else{$('msg').textContent='Akun dibuat. Jika verifikasi email aktif di Supabase, akun perlu dikonfirmasi dulu.';$('msg').className='msg ok';$('submit').disabled=false}
-});
-</script>
-</body>
-</html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rellify • Daftar</title><style>
+:root{--bg:#08090d;--card:#11131a;--card2:#191c25;--text:#fff;--muted:#8b91a1;--border:#292d3a;--accent:#8b5cf6;--danger:#ef4444;--ok:#22c55e}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--bg);color:var(--text);font-family:Segoe UI,Arial,sans-serif}.box{width:min(420px,100%);padding:28px;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 70px #0008}.logo{text-align:center;font-size:2.3rem;font-weight:900}.sub{text-align:center;color:var(--muted);margin:8px 0 24px}label{display:block;margin:14px 0 7px;font-weight:700}input{width:100%;padding:13px;border:1px solid var(--border);border-radius:10px;background:var(--card2);color:var(--text);font-size:1rem;outline:none}button{width:100%;margin-top:18px;padding:13px;border:0;border-radius:10px;background:var(--accent);color:#fff;font-weight:900;font-size:1rem;cursor:pointer}.msg{min-height:22px;margin-top:14px;text-align:center;color:var(--muted)}.error{color:var(--danger)}.ok{color:var(--ok)}.links{text-align:center;margin-top:18px;color:var(--muted)}a{color:#b89cff;text-decoration:none}.back{display:block;text-align:center;margin-top:12px;color:var(--muted)}.note{font-size:.82rem;color:var(--muted);margin-top:10px;line-height:1.5}
+</style></head><body><main class="box"><div class="logo">🚀 Rellify</div><div class="sub">Buat akun untuk ikut leaderboard global.</div><form id="form"><label for="username">Username</label><input id="username" maxlength="20" autocomplete="username" required placeholder="Username kamu"><label for="password">Password</label><input id="password" type="password" minlength="6" autocomplete="new-password" required placeholder="Minimal 6 karakter"><label for="password2">Ulangi Password</label><input id="password2" type="password" minlength="6" autocomplete="new-password" required placeholder="Ulangi password"><button id="submit" type="submit">✨ Daftar</button></form><div class="msg" id="msg"></div><div class="links">Sudah punya akun? <a href="login.html">Login</a></div><div class="note">Password ditangani oleh Supabase Auth. Jangan gunakan password yang sama dengan akun penting lainnya.</div><a class="back" href="index.html">← Kembali ke Rellify</a></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+const SUPABASE_URL='https://ibduionwnepqhmluddnp.supabase.co',SUPABASE_KEY='sb_publishable_u6YxLEe-Rvf0Xkc4aeqODA_Fj-oR19J',supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),$=id=>document.getElementById(id),emailFor=u=>u.trim().toLowerCase()+'@users.rellify.local';
+$('form').addEventListener('submit',async e=>{e.preventDefault();$('msg').textContent='Membuat akun...';$('msg').className='msg';$('submit').disabled=true;const username=$('username').value.trim().replace(/\s+/g,' '),password=$('password').value,password2=$('password2').value;if(!/^[A-Za-z0-9_.-]{2,20}$/.test(username)){ $('msg').textContent='Username hanya boleh huruf, angka, _, ., - (2-20 karakter).';$('msg').className='msg error';$('submit').disabled=false;return }if(password!==password2){$('msg').textContent='Password tidak sama.';$('msg').className='msg error';$('submit').disabled=false;return}const {data,error}=await supabase.auth.signUp({email:emailFor(username),password,options:{data:{username}}});if(error){let m=error.message||'';if(/already registered|already exists/i.test(m))m='Username sudah dipakai.';$('msg').textContent=m;$('msg').className='msg error';$('submit').disabled=false;return}localStorage.setItem('rellifyUsername',username);if(data.session){$('msg').textContent='Akun berhasil dibuat!';$('msg').className='msg ok';setTimeout(()=>location.href='games.html',400)}else{$('msg').textContent='Akun dibuat. Jika verifikasi email aktif, konfirmasi akun dulu di Supabase.';$('msg').className='msg ok';$('submit').disabled=false}});
+</script></body></html>
