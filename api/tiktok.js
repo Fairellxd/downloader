@@ -41,6 +41,8 @@ export default async function handler(req, res) {
 
         const data = result.data;
         const videoUrl = data.hdplay || data.play;
+        const audioUrl = data.music || data.music_info?.play || '';
+
         if (!videoUrl) {
             return res.status(404).json({ error: 'URL video tidak ditemukan.' });
         }
@@ -48,6 +50,7 @@ export default async function handler(req, res) {
         return res.status(200).json({
             success: true,
             video_url: videoUrl,
+            audio_url: audioUrl,
             title: data.title || 'TikTok',
             author: data.author?.unique_id ? `@${data.author.unique_id}` : '@unknown'
         });
