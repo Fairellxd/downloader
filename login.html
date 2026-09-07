@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rellify • Login</title>
+<style>
+:root{--bg:#08090d;--card:#11131a;--card2:#191c25;--text:#fff;--muted:#8b91a1;--border:#292d3a;--accent:#8b5cf6;--danger:#ef4444;--ok:#22c55e}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--bg);color:var(--text);font-family:Segoe UI,Arial,sans-serif}.box{width:min(420px,100%);padding:28px;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 70px #0008}.logo{text-align:center;font-size:2.3rem;font-weight:900}.sub{text-align:center;color:var(--muted);margin:8px 0 24px}label{display:block;margin:14px 0 7px;font-weight:700}input{width:100%;padding:13px;border:1px solid var(--border);border-radius:10px;background:var(--card2);color:var(--text);font-size:1rem;outline:none}input:focus{border-color:var(--accent)}button{width:100%;margin-top:18px;padding:13px;border:0;border-radius:10px;background:var(--accent);color:#fff;font-weight:900;font-size:1rem;cursor:pointer}.msg{min-height:22px;margin-top:14px;text-align:center;color:var(--muted)}.error{color:var(--danger)}.ok{color:var(--ok)}.links{text-align:center;margin-top:18px;color:var(--muted)}a{color:#b89cff;text-decoration:none}.back{display:block;text-align:center;margin-top:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main class="box">
+<div class="logo">🚀 Rellify</div>
+<div class="sub">Masuk untuk menyimpan akun dan skor leaderboard.</div>
+<form id="form">
+<label for="username">Username</label>
+<input id="username" maxlength="20" autocomplete="username" required placeholder="Username kamu">
+<label for="password">Password</label>
+<input id="password" type="password" minlength="6" autocomplete="current-password" required placeholder="Minimal 6 karakter">
+<button id="submit" type="submit">🔐 Login</button>
+</form>
+<div class="msg" id="msg"></div>
+<div class="links">Belum punya akun? <a href="register.html">Daftar</a></div>
+<a class="back" href="index.html">← Kembali ke Rellify</a>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://ibduionwnepqhmluddnp.supabase.co';
+const SUPABASE_KEY='sb_publishable_u6YxLEe-Rvf0Xkc4aeqODA_Fj-oR19J';
+const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+function emailFor(u){return u.trim().toLowerCase()+'@users.rellify.local'}
+$('form').addEventListener('submit',async e=>{
+ e.preventDefault(); $('msg').textContent='Memproses...'; $('msg').className='msg'; $('submit').disabled=true;
+ const username=$('username').value.trim().replace(/\s+/g,' '), password=$('password').value;
+ if(!/^[A-Za-z0-9_.-]{2,20}$/.test(username)){ $('msg').textContent='Username hanya boleh huruf, angka, _, ., - (2-20 karakter).';$('msg').className='msg error';$('submit').disabled=false;return }
+ const {error}=await supabase.auth.signInWithPassword({email:emailFor(username),password});
+ if(error){$('msg').textContent='Username atau password salah.';$('msg').className='msg error';$('submit').disabled=false;return}
+ localStorage.setItem('rellifyUsername',username); location.href='games.html';
+});
+(async()=>{const {data}=await supabase.auth.getSession();if(data.session)location.href='games.html'})();
+</script>
+</body>
+</html>
