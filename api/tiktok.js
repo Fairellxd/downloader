@@ -17,6 +17,20 @@ export default async function handler(req, res) {
     }
 
     try {
+        let normalizedUrl = url.trim();
+
+        // TikTok tracking/query parameters can make some resolver endpoints
+        // reject an otherwise valid video URL. Keep the actual path/video ID.
+        try {
+            const parsed = new URL(normalizedUrl);
+            const host = parsed.hostname.toLowerCase().replace(/^www\./, '');
+            if (host === 'tiktok.com' || host.endsWith('.tiktok.com')) {
+                normalizedUrl = `https://www.tiktok.com${parsed.pathname}`;
+            }
+        } catch {
+            return res.status(400).json({ error: 'URL TikTok tidak valid.' });
+        }
+
         const response = await fetch('https://www.tikwm.com/api/', {
             method: 'POST',
             headers: {
@@ -24,7 +38,7 @@ export default async function handler(req, res) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: new URLSearchParams({ url, hd: '1' })
+            body: new URLSearchParams({ url: normalizedUrl, hd: '1' })
         });
 
         const text = await response.text();
@@ -49,7 +63,6 @@ export default async function handler(req, res) {
         }
 
         const duration = Number(data.duration ?? data.video?.duration ?? 0) || 0;
-        const thumbnail = data.cover || data.origin_cover || data.thumbnail || data.video?.cover || '';
         const safeTitle = String(data.title || 'TikTok').trim().replace(/[\\/:*?"<>|]/g, '_').slice(0, 90) || 'TikTok';
 
         return res.status(200).json({
@@ -60,7 +73,6 @@ export default async function handler(req, res) {
             title: data.title || 'TikTok',
             author: data.author?.unique_id ? `@${data.author.unique_id}` : '@unknown',
             duration,
-            thumbnail,
             filename: `${safeTitle}.${format}`
         });
     } catch (error) {
