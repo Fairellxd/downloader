@@ -11,7 +11,6 @@ export default async function handler(req, res) {
     if (!url || typeof url !== 'string') {
         return res.status(400).json({ error: 'URL wajib diisi!' });
     }
-
     if (!['mp4', 'mp3'].includes(format)) {
         return res.status(400).json({ error: 'Format harus MP4 atau MP3.' });
     }
@@ -40,34 +39,15 @@ export default async function handler(req, res) {
         }
 
         const data = result.data;
+        const mediaUrl = format === 'mp4'
+            ? (data.hdplay || data.play || data.wmplay)
+            : (data.music || data.music_info?.play || data.music_info?.url || data.music_info?.music);
 
-        // TikWM can return different media fields depending on the video.
-        // Keep several fallbacks so a valid response does not become "URL media tidak tersedia".
-        const videoCandidates = [
-            data.hdplay,
-            data.play,
-            data.wmplay,
-            data.hdplay_api,
-            data.play_api
-        ];
-        const audioCandidates = [
-            data.music,
-            data.music_info?.play,
-            data.music_info?.url,
-            data.music_info?.music
-        ];
-
-        const mediaUrl = (format === 'mp3' ? audioCandidates : videoCandidates)
-            .find(value => typeof value === 'string' && /^https?:\/\//i.test(value));
-
-        if (!mediaUrl) {
-            console.error('TikWM media fields missing:', {
-                format,
-                keys: Object.keys(data || {}),
-                musicKeys: data.music_info ? Object.keys(data.music_info) : []
-            });
+        if (typeof mediaUrl !== 'string' || !/^https?:\/\//i.test(mediaUrl)) {
             return res.status(404).json({
-                error: `URL ${format.toUpperCase()} tidak ditemukan dari layanan TikTok.`
+                error: format === 'mp4'
+                    ? 'URL video MP4 tidak tersedia dari layanan TikTok.'
+                    : 'URL audio MP3 tidak tersedia dari layanan TikTok.'
             });
         }
 
@@ -76,6 +56,7 @@ export default async function handler(req, res) {
             platform: 'tiktok',
             format,
             media_url: mediaUrl,
+            filename: `tiktok_${data.id || Date.now()}.${format}`,
             title: data.title || 'TikTok',
             author: data.author?.unique_id ? `@${data.author.unique_id}` : '@unknown'
         });
