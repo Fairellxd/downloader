@@ -1,60 +1,18 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#08090d">
-<title>Rellify WAF</title>
-<style>
-:root{--bg:#08090d;--card:#11131a;--border:#292d3a;--text:#fff;--muted:#858b9b;--accent:#8b5cf6;--danger:#ff6b81;--ok:#59d98e}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Segoe UI,Arial,sans-serif;min-height:100vh;background:radial-gradient(circle at 50% 35%,#171327 0,#08090d 48%);color:var(--text);display:flex;align-items:center;justify-content:center;padding:24px}.wrap{width:min(760px,100%);text-align:center}.logo{font-size:2.7rem;font-weight:900;background:linear-gradient(135deg,#ff0050,#8b5cf6,#00d9ff);-webkit-background-clip:text;color:transparent}.shield{width:92px;height:92px;margin:28px auto 20px;border:2px solid #3a315e;border-radius:28px;display:grid;place-items:center;background:#11101b;box-shadow:0 0 50px #8b5cf633;animation:pulse 1.8s infinite}.shield span{font-size:3rem}.spinner{width:38px;height:38px;margin:0 auto 18px;border:4px solid #292d3a;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{transform:scale(1.04);box-shadow:0 0 70px #8b5cf655}}h1{font-size:1.35rem;margin-bottom:10px}.status{color:var(--muted);line-height:1.7;font-size:.92rem}.notice{display:none;margin-top:25px;padding:22px;border:1px solid #4a2530;background:#160d12;border-radius:18px}.notice.show{display:block}.notice h2{color:#ff9aaa;font-size:1.05rem;margin-bottom:9px}.notice p{color:#c7cbd6;line-height:1.65}.badge{display:inline-block;margin-top:14px;padding:7px 11px;border-radius:999px;background:#211425;color:#ff9aaa;font-size:.78rem;font-weight:800}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}.stat{padding:12px;border:1px solid var(--border);background:#0d0f15;border-radius:14px}.stat b{display:block;font-size:1.05rem;margin-bottom:3px}.stat span{color:var(--muted);font-size:.72rem}.safe{color:var(--ok)}.back{display:inline-block;margin-top:22px;color:#a78bfa;text-decoration:none;font-size:.86rem}.small{margin-top:25px;color:#626878;font-size:.72rem}@media(max-width:520px){.stats{grid-template-columns:1fr}.logo{font-size:2.3rem}}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <div class="logo">Rellify</div>
-  <div class="shield"><span>🛡️</span></div>
-  <div class="spinner" id="spinner"></div>
-  <h1 id="title">Yh, WAF-nya cuma loading...</h1>
-  <p class="status" id="status">Tunggu bentar, Rellify lagi ngecek request.</p>
-  <div class="notice" id="notice">
-    <h2 id="detected">⚠️ Terdeteksi: -</h2>
-    <p>Yah malah iseng tes WAF dari Rellify, lu bisa langsung refresh, jangan coba lagi, karna itu sia sia 👽</p>
-    <span class="badge">NO VULNERABILITY</span>
-    <div class="stats">
-      <div class="stat"><b id="score">0/100</b><span>Risk score</span></div>
-      <div class="stat"><b id="count">0</b><span>Rule hits</span></div>
-      <div class="stat"><b class="safe">ACTIVE</b><span>WAF status</span></div>
-    </div>
-  </div>
-  <a class="back" href="/">← Kembali ke Rellify</a>
-  <div class="small">Defensive request monitor • Rellify</div>
-</div>
-<script>
-const qs=new URLSearchParams(location.search);
-const forced=qs.get('detected');
-const score=Number(qs.get('score')||0);
-const count=Number(qs.get('count')||0);
-const sample=[...qs.values(),...qs.keys(),location.hash].join(' ');
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="theme-color" content="#08090d"><title>Rellify WAF</title><style>:root{--bg:#08090d;--card:#11131a;--border:#292d3a;--text:#fff;--muted:#858b9b;--accent:#8b5cf6;--danger:#ff6b81;--ok:#59d98e}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Segoe UI,Arial,sans-serif;min-height:100vh;background:radial-gradient(circle at 50% 35%,#171327 0,#08090d 48%);color:var(--text);display:flex;align-items:center;justify-content:center;padding:24px}.wrap{width:min(760px,100%);text-align:center}.logo{font-size:2.7rem;font-weight:900;background:linear-gradient(135deg,#ff0050,#8b5cf6,#00d9ff);-webkit-background-clip:text;color:transparent}.shield{width:92px;height:92px;margin:28px auto 20px;border:2px solid #3a315e;border-radius:28px;display:grid;place-items:center;background:#11101b;box-shadow:0 0 50px #8b5cf633;animation:pulse 1.8s infinite}.shield span{font-size:3rem}.spinner{width:38px;height:38px;margin:0 auto 18px;border:4px solid #292d3a;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{transform:scale(1.04);box-shadow:0 0 70px #8b5cf655}}h1{font-size:1.35rem;margin-bottom:10px}.status{color:var(--muted);line-height:1.7;font-size:.92rem}.notice{display:none;margin-top:25px;padding:22px;border:1px solid #4a2530;background:#160d12;border-radius:18px}.notice.show{display:block}.notice h2{color:#ff9aaa;font-size:1.05rem;margin-bottom:9px}.notice p{color:#c7cbd6;line-height:1.65}.badge{display:inline-block;margin-top:14px;padding:7px 11px;border-radius:999px;background:#211425;color:#ff9aaa;font-size:.78rem;font-weight:800}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}.stat{padding:12px;border:1px solid var(--border);background:#0d0f15;border-radius:14px}.stat b{display:block;font-size:1.05rem;margin-bottom:3px}.stat span{color:var(--muted);font-size:.72rem}.safe{color:var(--ok)}.back{display:inline-block;margin-top:22px;color:#a78bfa;text-decoration:none;font-size:.86rem}.small{margin-top:25px;color:#626878;font-size:.72rem}@media(max-width:520px){.stats{grid-template-columns:1fr}.logo{font-size:2.3rem}}</style></head><body><div class="wrap"><div class="logo">Rellify</div><div class="shield"><span>🛡️</span></div><div class="spinner" id="spinner"></div><h1 id="title">Yh, WAF-nya cuma loading...</h1><p class="status" id="status">Tunggu bentar, Rellify lagi ngecek request.</p><div class="notice" id="notice"><h2 id="detected">⚠️ Terdeteksi: -</h2><p>Yah malah iseng tes WAF dari Rellify, lu bisa langsung refresh, jangan coba lagi, karna itu sia sia 👽</p><span class="badge" id="severityBadge">NO VULNERABILITY</span><div class="stats"><div class="stat"><b id="score">0/100</b><span>Risk score</span></div><div class="stat"><b id="count">0</b><span>Rule hits</span></div><div class="stat"><b class="safe">ACTIVE</b><span>WAF status</span></div></div></div><a class="back" href="/">← Kembali ke Rellify</a><div class="small">Defensive request monitor • Rellify</div></div><script>
+const qs=new URLSearchParams(location.search),forced=qs.get('detected'),serverScore=Number(qs.get('score')||0),serverCount=Number(qs.get('count')||0),severityParam=(qs.get('severity')||'').toUpperCase();
 const rules=[
-{name:'XSS',re:/<\s*script|javascript\s*:|vbscript\s*:|on(?:error|load|click|mouseover)\s*=|<\s*(iframe|svg|img|object|embed)\b/i},
-{name:'SQL Injection',re:/(?:union\s+(?:all\s+)?select|select\s+.+\s+from|insert\s+into|drop\s+(?:table|database)|(?:or|and)\s+['"`]?\d+['"`]?\s*=\s*['"`]?\d+|--\s|\/\*)/i},
-{name:'Path Traversal',re:/(?:\.\.\/|\.\.\\|%2e%2e|%252e%252e)/i},
-{name:'Command Injection',re:/(?:^|[;&|])\s*(?:cmd|powershell|pwsh|bash|sh)\b|\$\([^)]*\)|`[^`]+`/i},
-{name:'Template Injection',re:/\$\{[^}]+\}|\{\{[^}]+\}\}/i},
-{name:'SSRF Pattern',re:/https?:\/\/(?:127\.0\.0\.1|localhost|0\.0\.0\.0|169\.254\.169\.254|\[::1\])/i},
-{name:'XXE Pattern',re:/<!DOCTYPE[\s\S]{0,500}(?:ENTITY|SYSTEM)\b/i},
-{name:'Suspicious File Path',re:/(?:\/etc\/(?:passwd|shadow)|\.env(?:\b|\/)|id_rsa(?:\.pub)?)/i}
+{name:'XSS',score:90,severity:'CRITICAL',re:/<\s*script|javascript\s*:|vbscript\s*:|on(?:error|load|click|mouseover)\s*=|<\s*(iframe|svg|img|object|embed)\b/i},
+{name:'SQL Injection',score:100,severity:'CRITICAL',re:/(?:union\s+(?:all\s+)?select|select\s+.+\s+from|insert\s+into|update\s+.+\s+set|delete\s+from|drop\s+(?:table|database)|(?:or|and)\s+['"`]?\d+['"`]?\s*=\s*['"`]?\d+['"`]?|--\s|\/\*)/i},
+{name:'Path Traversal',score:85,severity:'HIGH',re:/(?:\.\.\/|\.\.\\|%2e%2e|%252e%252e|%2f%2e%2e|%5c%2e%2e)/i},
+{name:'Command Injection',score:100,severity:'CRITICAL',re:/(?:^|[;&|])\s*(?:cmd(?:\.exe)?|powershell|pwsh|bash|sh|zsh)\b|\$\([^)]{1,200}\)|`[^`\n]{1,200}`/i},
+{name:'Template Injection',score:90,severity:'CRITICAL',re:/(?:\$\{[^}]{1,200}\}|\{\{[^}]{1,200}\}\}|<%[\s\S]{0,200}%>)/i},
+{name:'SSRF Pattern',score:90,severity:'CRITICAL',re:/(?:https?:\/\/(?:127\.0\.0\.1|localhost|0\.0\.0\.0|169\.254\.169\.254)|https?:\/\/\[::1\])/i},
+{name:'XXE Pattern',score:90,severity:'CRITICAL',re:/<!DOCTYPE[\s\S]{0,500}(?:ENTITY|SYSTEM)\b/i},
+{name:'Suspicious File Path',score:75,severity:'HIGH',re:/(?:\/etc\/(?:passwd|shadow)|(?:boot|windows)\.ini|web\.config|\.env(?:\b|\/)|id_rsa(?:\.pub)?)/i},
+{name:'Encoded Payload',score:65,severity:'MEDIUM',re:/(?:%3c|%3e|%22|%27|%24%7b|%7b%7b|%2e%2e|%252e)/i}
 ];
-const detected=forced||rules.find(r=>r.re.test(sample))?.name||'Tidak ada pola umum';
-setTimeout(()=>{
- document.getElementById('spinner').style.display='none';
- document.getElementById('title').textContent='Yah malah iseng tes WAF dari Rellify 😭';
- document.getElementById('status').textContent=forced?'Request diblokir oleh rule engine Rellify.':'WAF selesai loading.';
- document.getElementById('detected').textContent='⚠️ Terdeteksi: '+detected;
- document.getElementById('score').textContent=Math.min(score,100)+'/100';
- document.getElementById('count').textContent=count;
- document.getElementById('notice').classList.add('show');
-},1600);
-</script>
-</body>
-</html>
+let detectedRule=rules.find(r=>r.name.toLowerCase()===String(forced||'').toLowerCase());
+const detected=forced||detectedRule?.name||'Tidak ada pola umum';
+const score=Math.min(serverScore||detectedRule?.score||0,100),count=serverCount||(detectedRule?1:0),severity=severityParam||detectedRule?.severity||'LOW';
+setTimeout(()=>{document.getElementById('spinner').style.display='none';document.getElementById('title').textContent='Yah malah iseng tes WAF dari Rellify 😭';document.getElementById('status').textContent=forced?'Request diblokir oleh rule engine Rellify.':'WAF selesai loading.';document.getElementById('detected').textContent='⚠️ Terdeteksi: '+detected;document.getElementById('score').textContent=score+'/100';document.getElementById('count').textContent=count;document.getElementById('severityBadge').textContent=severity+' • '+score+'/100';document.getElementById('notice').classList.add('show')},1600);
+</script></body></html>
