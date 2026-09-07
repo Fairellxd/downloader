@@ -1,58 +1,159 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Downloader</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
-        .container{max-width:750px;width:100%;background:#121212;border-radius:20px;padding:35px;border:1px solid #1a1a1a;box-shadow:0 20px 60px rgba(0,0,0,.8)}
-        .logo{text-align:center;margin-bottom:25px}.logo h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#ff0050,#00f2ea);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.logo p{color:#666;font-size:.85rem}
-        .input-group{display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap}.input-group input{flex:1;padding:14px 18px;background:#1a1a1a;border:2px solid #2a2a2a;border-radius:12px;color:#fff;font-size:.95rem;outline:none;min-width:200px}.input-group input:focus{border-color:#ff0050}
-        .btn-fetch{padding:14px 28px;background:linear-gradient(135deg,#ff0050,#ff2d55);border:none;border-radius:12px;color:#fff;font-weight:700;font-size:.95rem;cursor:pointer}.btn-fetch:hover{transform:scale(1.02)}
-        .loading{text-align:center;padding:20px;display:none}.loading .spinner{width:40px;height:40px;border:4px solid #1a1a1a;border-top:4px solid #ff0050;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px}@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-        .result{display:none;margin-top:25px;animation:fadeIn .5s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.video-wrapper{border-radius:16px;overflow:hidden;background:#1a1a1a;margin-bottom:15px}.video-wrapper video{width:100%;max-height:600px;display:block}
-        .info{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid #1a1a1a;flex-wrap:wrap;gap:10px}.info .title{font-size:.9rem;color:#aaa;flex:1;min-width:150px}.info .title strong{color:#fff;display:block}.btn-save{padding:12px 28px;background:linear-gradient(135deg,#00f2ea,#00d4d4);border:none;border-radius:12px;color:#0a0a0a;font-weight:700;font-size:.9rem;cursor:pointer}
-        .error{display:none;background:rgba(255,0,0,.1);border:1px solid #ff0050;border-radius:12px;padding:15px 20px;color:#ff6666;text-align:center;margin-top:15px}.error.show{display:block}.footer{text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #1a1a1a;font-size:.75rem;color:#444}.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid #00f2ea;color:#00f2ea;padding:14px 28px;border-radius:12px;font-size:.9rem;z-index:9999;max-width:90%;text-align:center}@media(max-width:600px){.container{padding:25px}.input-group{flex-direction:column}.btn-fetch{width:100%}}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Downloader</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Segoe UI,Arial,sans-serif;min-height:100vh;background:#08090d;color:#fff;display:flex;justify-content:center;align-items:center;padding:24px}
+.container{width:100%;max-width:780px;background:#11131a;border:1px solid #242733;border-radius:24px;padding:34px;box-shadow:0 24px 70px rgba(0,0,0,.45)}
+.logo{text-align:center;margin-bottom:28px}.logo h1{font-size:2.2rem;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,#ff0050,#8b5cf6,#00d9ff);-webkit-background-clip:text;background-clip:text;color:transparent}.logo p{margin-top:8px;color:#858b9b;font-size:.9rem}
+.platforms{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.platform{border:1px solid #303442;background:#191c25;color:#aeb4c2;border-radius:13px;padding:13px;cursor:pointer;font-weight:700;font-size:.95rem;transition:.2s}.platform.active{background:linear-gradient(135deg,#ff0050,#7c3aed);border-color:transparent;color:#fff}.platform:hover{transform:translateY(-1px)}
+.input-group{display:flex;gap:10px}.input-group input{flex:1;min-width:0;background:#191c25;color:#fff;border:2px solid #2a2e3a;border-radius:13px;padding:15px 17px;font-size:.95rem;outline:none}.input-group input:focus{border-color:#7c3aed}.btn-process{border:0;border-radius:13px;padding:0 25px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;font-weight:800;cursor:pointer;min-width:115px}.btn-process:disabled{opacity:.6;cursor:wait}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.field label{display:block;color:#858b9b;font-size:.78rem;margin-bottom:7px}.field select{width:100%;background:#191c25;color:#fff;border:1px solid #2a2e3a;border-radius:11px;padding:12px;outline:none}.field select:focus{border-color:#7c3aed}
+.loading{display:none;text-align:center;padding:28px 0;color:#9ca3af}.spinner{width:38px;height:38px;margin:0 auto 12px;border:4px solid #282c37;border-top-color:#8b5cf6;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.error{display:none;margin-top:18px;padding:14px 16px;border:1px solid #7f1d1d;background:#2a1116;color:#ff9b9b;border-radius:12px}.error.show{display:block}
+.result{display:none;margin-top:24px}.media-box{background:#090b10;border:1px solid #252936;border-radius:16px;overflow:hidden;margin-bottom:15px}.media-box video,.media-box audio{width:100%;display:block}.media-box video{max-height:560px}.audio-card{padding:24px}.audio-card .icon{font-size:2.5rem;text-align:center;margin-bottom:12px}.audio-card audio{width:100%}.info{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 0;border-top:1px solid #252936}.title{min-width:0;flex:1}.title strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.title span{display:block;margin-top:4px;color:#858b9b;font-size:.82rem}.btn-download{border:0;border-radius:12px;padding:13px 22px;background:linear-gradient(135deg,#00d9a5,#00b8d9);color:#06100e;font-weight:800;cursor:pointer;white-space:nowrap}.btn-download:disabled{opacity:.6;cursor:wait}
+.footer{text-align:center;border-top:1px solid #20232d;margin-top:25px;padding-top:18px;color:#5f6675;font-size:.75rem;line-height:1.5}.footer b{color:#8b93a3}
+@media(max-width:620px){body{padding:12px}.container{padding:23px 18px;border-radius:19px}.logo h1{font-size:1.8rem}.input-group{flex-direction:column}.btn-process{height:48px}.options{grid-template-columns:1fr}.info{align-items:stretch;flex-direction:column}.btn-download{width:100%}}
+</style>
 </head>
 <body>
 <div class="container">
-    <div class="logo"><h1>🎵 TikTok Downloader</h1><p>Download video TikTok tanpa watermark</p></div>
-    <div class="input-group"><input type="text" id="urlInput" placeholder="Masukkan URL TikTok..."><button class="btn-fetch" id="btnFetch">📥 Proses</button></div>
-    <div class="loading" id="loading"><div class="spinner"></div><p>Mengambil video...</p></div>
-    <div class="error" id="error"></div>
-    <div class="result" id="result">
-        <div class="video-wrapper"><video id="videoPlayer" controls></video></div>
-        <div class="info"><div class="title"><strong id="videoTitle">Judul Video</strong><span id="videoAuthor">@username</span></div><button class="btn-save" id="btnSave">💾 Download Video</button></div>
+  <div class="logo">
+    <h1>Media Downloader</h1>
+    <p>YouTube & TikTok • MP4 & MP3</p>
+  </div>
+
+  <div class="platforms">
+    <button class="platform active" data-platform="youtube">▶ YouTube</button>
+    <button class="platform" data-platform="tiktok">♪ TikTok</button>
+  </div>
+
+  <div class="input-group">
+    <input id="urlInput" type="text" autocomplete="off" placeholder="Tempel URL YouTube...">
+    <button class="btn-process" id="btnProcess">Proses</button>
+  </div>
+
+  <div class="options">
+    <div class="field">
+      <label for="format">Format</label>
+      <select id="format">
+        <option value="mp4">MP4 — Video</option>
+        <option value="mp3">MP3 — Audio</option>
+      </select>
     </div>
-    <div class="footer"><p>Download video TikTok • Untuk keperluan pribadi</p></div>
+    <div class="field" id="qualityField">
+      <label for="quality">Kualitas</label>
+      <select id="quality">
+        <option value="max">Best Quality</option>
+        <option value="1080">1080p</option>
+        <option value="720">720p</option>
+        <option value="480">480p</option>
+        <option value="360">360p</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="loading" id="loading"><div class="spinner"></div><p id="loadingText">Memproses...</p></div>
+  <div class="error" id="error"></div>
+
+  <div class="result" id="result">
+    <div class="media-box" id="mediaBox"></div>
+    <div class="info">
+      <div class="title"><strong id="mediaTitle">Media</strong><span id="mediaAuthor"></span></div>
+      <button class="btn-download" id="btnDownload">Download</button>
+    </div>
+  </div>
+
+  <div class="footer"><b>Gunakan hanya untuk konten yang kamu miliki atau punya izin untuk mengunduh.</b><br>Downloader ini tidak dimaksudkan untuk mengakali pembatasan platform.</div>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-    const $=id=>document.getElementById(id), urlInput=$('urlInput'), btnFetch=$('btnFetch'), loading=$('loading'), result=$('result'), error=$('error'), videoPlayer=$('videoPlayer'), videoTitle=$('videoTitle'), videoAuthor=$('videoAuthor'), btnSave=$('btnSave');
-    let currentVideoUrl='';
-    const showError=msg=>{loading.style.display='none';error.textContent='⚠️ '+msg;error.classList.add('show');};
-    async function fetchVideo(){
-        const url=urlInput.value.trim();
-        if(!url)return showError('Masukkan URL TikTok!');
-        loading.style.display='block';result.style.display='none';error.classList.remove('show');btnFetch.disabled=true;btnFetch.textContent='⏳...';
-        try{
-            const response=await fetch(`/api/tiktok?url=${encodeURIComponent(url)}`);
-            const text=await response.text();
-            let data;
-            try{data=JSON.parse(text);}catch{throw new Error(`API mengembalikan respons bukan JSON (${response.status}).`);}
-            if(!response.ok||!data.success||!data.video_url)throw new Error(data.error||'Video tidak ditemukan');
-            currentVideoUrl=data.video_url;videoPlayer.src=currentVideoUrl;videoTitle.textContent=data.title||'TikTok Video';videoAuthor.textContent=data.author||'@unknown';result.style.display='block';
-        }catch(err){showError(err.message);}finally{loading.style.display='none';btnFetch.disabled=false;btnFetch.textContent='📥 Proses';}
-    }
-    async function downloadVideo(){
-        if(!currentVideoUrl)return;
-        btnSave.disabled=true;btnSave.textContent='⏳...';
-        try{const res=await fetch(currentVideoUrl);if(!res.ok)throw new Error();const blob=await res.blob();const a=document.createElement('a');const objectUrl=URL.createObjectURL(blob);a.href=objectUrl;a.download=`tiktok_${Date.now()}.mp4`;a.click();URL.revokeObjectURL(objectUrl);}catch{window.open(currentVideoUrl,'_blank');}finally{btnSave.disabled=false;btnSave.textContent='💾 Download Video';}
-    }
-    btnFetch.addEventListener('click',fetchVideo);btnSave.addEventListener('click',downloadVideo);urlInput.addEventListener('keypress',e=>{if(e.key==='Enter')fetchVideo();});
+  const $=id=>document.getElementById(id);
+  const urlInput=$('urlInput'), format=$('format'), quality=$('quality'), qualityField=$('qualityField');
+  const btnProcess=$('btnProcess'), loading=$('loading'), loadingText=$('loadingText'), error=$('error');
+  const result=$('result'), mediaBox=$('mediaBox'), mediaTitle=$('mediaTitle'), mediaAuthor=$('mediaAuthor'), btnDownload=$('btnDownload');
+  const platformButtons=[...document.querySelectorAll('.platform')];
+  let platform='youtube', currentUrl='', currentFilename='', currentFormat='mp4';
+
+  function setPlatform(next){
+    platform=next;
+    platformButtons.forEach(b=>b.classList.toggle('active',b.dataset.platform===next));
+    urlInput.placeholder=next==='youtube'?'Tempel URL YouTube...':'Tempel URL TikTok...';
+    qualityField.style.display=next==='youtube'&&format.value==='mp4'?'block':'none';
+    clearResult();
+  }
+  function clearResult(){result.style.display='none';mediaBox.innerHTML='';currentUrl='';currentFilename='';error.classList.remove('show');}
+  function showError(message){loading.style.display='none';error.textContent='⚠️ '+message;error.classList.add('show');}
+  function validUrl(value){
+    try{
+      const u=new URL(value);
+      const host=u.hostname.toLowerCase().replace(/^www\./,'');
+      if(platform==='youtube') return host==='youtube.com'||host==='youtu.be'||host.endsWith('.youtube.com');
+      return host==='tiktok.com'||host.endsWith('.tiktok.com');
+    }catch{return false;}
+  }
+  function updateOptions(){qualityField.style.display=platform==='youtube'&&format.value==='mp4'?'block':'none';}
+
+  async function processMedia(){
+    const url=urlInput.value.trim();
+    if(!url)return showError(`Masukkan URL ${platform==='youtube'?'YouTube':'TikTok'}!`);
+    if(!validUrl(url))return showError(`URL ${platform==='youtube'?'YouTube':'TikTok'} tidak valid.`);
+
+    loading.style.display='block';loadingText.textContent=`Memproses ${platform==='youtube'?'YouTube':'TikTok'}...`;error.classList.remove('show');result.style.display='none';btnProcess.disabled=true;btnProcess.textContent='...';
+    currentFormat=format.value;
+    try{
+      const endpoint=platform==='youtube'?'/api/youtube':'/api/tiktok';
+      const params=new URLSearchParams({url,format:currentFormat});
+      if(platform==='youtube'&&currentFormat==='mp4')params.set('quality',quality.value);
+      const response=await fetch(`${endpoint}?${params.toString()}`);
+      const text=await response.text();
+      let data;
+      try{data=JSON.parse(text);}catch{throw new Error(`API mengembalikan respons bukan JSON (${response.status}).`);}
+      if(!response.ok||!data.success)throw new Error(data.error||'Media tidak dapat diproses.');
+
+      currentUrl=platform==='tiktok'?(currentFormat==='mp3'?data.audio_url:data.video_url):data.url;
+      currentFilename=data.filename||`${platform}_${Date.now()}.${currentFormat}`;
+      if(!currentUrl)throw new Error(currentFormat==='mp3'?'URL audio tidak tersedia.':'URL media tidak tersedia.');
+
+      mediaTitle.textContent=data.title||currentFilename;
+      mediaAuthor.textContent=data.author||'';
+      mediaBox.innerHTML='';
+      if(currentFormat==='mp3'){
+        const card=document.createElement('div');card.className='audio-card';card.innerHTML='<div class="icon">🎵</div>';
+        const audio=document.createElement('audio');audio.controls=true;audio.preload='metadata';audio.src=currentUrl;card.appendChild(audio);mediaBox.appendChild(card);
+      }else{
+        const video=document.createElement('video');video.controls=true;video.playsInline=true;video.preload='metadata';video.src=currentUrl;mediaBox.appendChild(video);
+      }
+      result.style.display='block';
+    }catch(err){showError(err.message||'Terjadi kesalahan.');}
+    finally{loading.style.display='none';btnProcess.disabled=false;btnProcess.textContent='Proses';}
+  }
+
+  async function downloadMedia(){
+    if(!currentUrl)return;
+    btnDownload.disabled=true;btnDownload.textContent='Menyiapkan...';
+    try{
+      const response=await fetch(currentUrl);
+      if(!response.ok)throw new Error();
+      const blob=await response.blob();
+      const objectUrl=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=objectUrl;a.download=currentFilename||`${platform}_${Date.now()}.${currentFormat}`;document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(objectUrl),1000);
+    }catch{
+      window.open(currentUrl,'_blank','noopener,noreferrer');
+    }finally{btnDownload.disabled=false;btnDownload.textContent='Download';}
+  }
+
+  platformButtons.forEach(button=>button.addEventListener('click',()=>setPlatform(button.dataset.platform)));
+  format.addEventListener('change',updateOptions);
+  btnProcess.addEventListener('click',processMedia);
+  btnDownload.addEventListener('click',downloadMedia);
+  urlInput.addEventListener('keydown',e=>{if(e.key==='Enter')processMedia();});
+  updateOptions();
 });
 </script>
 </body>
