@@ -8,7 +8,17 @@ const rules = [
 
 export default function middleware(request) {
   const url = request.nextUrl;
-  const input = decodeURIComponent(url.pathname + url.search + url.hash).slice(0, 8000);
+  const rawInput = url.pathname + url.search;
+
+  // Malformed percent-encoding must not crash the middleware.
+  let input = rawInput;
+  try {
+    input = decodeURIComponent(rawInput);
+  } catch {
+    input = rawInput;
+  }
+
+  input = input.slice(0, 8000);
   const hit = rules.find(rule => rule.re.test(input));
 
   if (!hit) return;
