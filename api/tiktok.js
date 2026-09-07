@@ -40,12 +40,35 @@ export default async function handler(req, res) {
         }
 
         const data = result.data;
-        const mediaUrl = format === 'mp3'
-            ? (data.music || data.music_info?.play)
-            : (data.hdplay || data.play);
+
+        // TikWM can return different media fields depending on the video.
+        // Keep several fallbacks so a valid response does not become "URL media tidak tersedia".
+        const videoCandidates = [
+            data.hdplay,
+            data.play,
+            data.wmplay,
+            data.hdplay_api,
+            data.play_api
+        ];
+        const audioCandidates = [
+            data.music,
+            data.music_info?.play,
+            data.music_info?.url,
+            data.music_info?.music
+        ];
+
+        const mediaUrl = (format === 'mp3' ? audioCandidates : videoCandidates)
+            .find(value => typeof value === 'string' && /^https?:\/\//i.test(value));
 
         if (!mediaUrl) {
-            return res.status(404).json({ error: `URL ${format.toUpperCase()} tidak ditemukan.` });
+            console.error('TikWM media fields missing:', {
+                format,
+                keys: Object.keys(data || {}),
+                musicKeys: data.music_info ? Object.keys(data.music_info) : []
+            });
+            return res.status(404).json({
+                error: `URL ${format.toUpperCase()} tidak ditemukan dari layanan TikTok.`
+            });
         }
 
         return res.status(200).json({
