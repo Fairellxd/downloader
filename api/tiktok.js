@@ -11,8 +11,9 @@ export default async function handler(req, res) {
     if (!url || typeof url !== 'string') {
         return res.status(400).json({ error: 'URL wajib diisi!' });
     }
-    if (!['mp4', 'mp3'].includes(format)) {
-        return res.status(400).json({ error: 'Format harus MP4 atau MP3.' });
+
+    if (format !== 'mp4') {
+        return res.status(400).json({ error: 'TikTok hanya mendukung MP4.' });
     }
 
     try {
@@ -39,18 +40,16 @@ export default async function handler(req, res) {
         }
 
         const data = result.data;
-        const mediaUrl = format === 'mp4'
-            ? (data.hdplay || data.play)
-            : (data.music || data.music_info?.play);
+        const mediaUrl = data.hdplay || data.play;
 
         if (!mediaUrl) {
-            return res.status(404).json({ error: `URL ${format.toUpperCase()} tidak ditemukan.` });
+            return res.status(404).json({ error: 'URL MP4 tidak ditemukan.' });
         }
 
         return res.status(200).json({
             success: true,
             platform: 'tiktok',
-            format,
+            format: 'mp4',
             media_url: mediaUrl,
             title: data.title || 'TikTok',
             author: data.author?.unique_id ? `@${data.author.unique_id}` : '@unknown'
