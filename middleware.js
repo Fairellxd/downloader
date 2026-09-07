@@ -5,10 +5,9 @@ const MAX_REQUESTS = 90;
 const BLOCK_MS = 60_000;
 const buckets = new Map();
 
-// Fixed risk per detection. The highest matching rule becomes the request risk.
 const RULES = [
   { name: 'XSS', score: 90, severity: 'CRITICAL', re: /<\s*script|javascript\s*:|vbscript\s*:|data\s*:\s*text\/html|on(?:error|load|click|mouseover)\s*=|<\s*(iframe|svg|img|object|embed)\b/i },
-  { name: 'SQL Injection', score: 100, severity: 'CRITICAL', re: /(?:union\s+(?:all\s+)?select|select\s+.+\s+from|insert\s+into|update\s+.+\s+set|delete\s+from|drop\s+(?:table|database)|(?:or|and)\s+['"`]?\d+['"`]?\s*=\s*['"`]?\d+['"`]?|--\s|\/\*)/i },
+  { name: 'SQL Injection', score: 100, severity: 'CRITICAL', re: /(?:union\s+(?:all\s+)?select|select\s+.+\s+from|insert\s+into|update\s+.+\s+set|delete\s+from|drop\s+(?:table|database)|(?:or|and)\s+['"`]?\d+['"`]?\s*=\s*['"`]?\d+['"`']?\d*|--\s|\/\*)/i },
   { name: 'Path Traversal', score: 85, severity: 'HIGH', re: /(?:\.\.\/|\.\.\\|%2e%2e|%252e%252e|%2f%2e%2e|%5c%2e%2e)/i },
   { name: 'Command Injection', score: 100, severity: 'CRITICAL', re: /(?:^|[;&|])\s*(?:cmd(?:\.exe)?|powershell|pwsh|bash|sh|zsh)\b|\$\([^)]{1,200}\)|`[^`\n]{1,200}`/i },
   { name: 'Template Injection', score: 90, severity: 'CRITICAL', re: /(?:\$\{[^}]{1,200}\}|\{\{[^}]{1,200}\}\}|<%[\s\S]{0,200}%>)/i },
@@ -68,7 +67,7 @@ function rateLimit(key) {
   return { blocked: false, remaining: MAX_REQUESTS - old.count };
 }
 
-export default function middleware(request, context) {
+export default function middleware(request) {
   try {
     const ip = ipAddress(request) || 'unknown';
     const result = inspect(request);
@@ -112,7 +111,7 @@ export default function middleware(request, context) {
     response.headers.set('X-Content-Type-Options', 'nosniff');
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-    response.headers.set('Content-Security-Policy', "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+    response.headers.set('Content-Security-Policy', "default-src 'self'; img-src 'self' data: https:; media-src 'self' https: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
     return response;
   } catch (error) {
     console.error('[Rellify WAF]', error);
