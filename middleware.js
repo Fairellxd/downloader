@@ -19,15 +19,9 @@ const RULES = [
 
 function inspect(request) {
   const url = new URL(request.url);
-  const headerSample = [
-    request.headers.get('user-agent') || '',
-    request.headers.get('referer') || '',
-    request.headers.get('content-type') || ''
-  ].join(' ');
+  const headerSample = [request.headers.get('user-agent') || '', request.headers.get('referer') || '', request.headers.get('content-type') || ''].join(' ');
   const sample = `${url.pathname}?${url.searchParams.toString()} ${headerSample}`.slice(0, 12000);
-
-  let score = 0;
-  let severity = 'LOW';
+  let score = 0, severity = 'LOW';
   const hits = [];
   for (const rule of RULES) {
     if (rule.re.test(sample)) {
@@ -38,32 +32,20 @@ function inspect(request) {
       else if (rule.score >= 40 && severity === 'LOW') severity = 'MEDIUM';
     }
   }
-
   const method = request.method.toUpperCase();
-  if (method === 'TRACE' || method === 'CONNECT') {
-    score = Math.max(score, 80);
-    severity = score >= 90 ? severity : 'HIGH';
-    hits.push('Suspicious HTTP Method');
-  }
+  if (method === 'TRACE' || method === 'CONNECT') { score = Math.max(score, 80); severity = score >= 90 ? severity : 'HIGH'; hits.push('Suspicious HTTP Method'); }
   if (url.pathname.length > 1800) score = Math.max(score, 50);
   if (url.search.length > 5000) score = Math.max(score, 50);
-
   return { score: Math.min(score, 100), severity, hits, method, pathname: url.pathname };
 }
 
 function rateLimit(key) {
   const now = Date.now();
   const old = buckets.get(key);
-  if (!old || now - old.started > WINDOW_MS) {
-    buckets.set(key, { started: now, count: 1, blockedUntil: 0 });
-    return { blocked: false, remaining: MAX_REQUESTS - 1 };
-  }
+  if (!old || now - old.started > WINDOW_MS) { buckets.set(key, { started: now, count: 1, blockedUntil: 0 }); return { blocked: false, remaining: MAX_REQUESTS - 1 }; }
   old.count += 1;
   if (old.blockedUntil > now) return { blocked: true, remaining: 0 };
-  if (old.count > MAX_REQUESTS) {
-    old.blockedUntil = now + BLOCK_MS;
-    return { blocked: true, remaining: 0 };
-  }
+  if (old.count > MAX_REQUESTS) { old.blockedUntil = now + BLOCK_MS; return { blocked: true, remaining: 0 }; }
   return { blocked: false, remaining: MAX_REQUESTS - old.count };
 }
 
@@ -76,19 +58,7 @@ export default function middleware(request) {
     const shouldBlock = suspicious || limit.blocked;
     const finalScore = limit.blocked ? 100 : result.score;
     const finalSeverity = limit.blocked ? 'CRITICAL' : result.severity;
-
-    console.log(JSON.stringify({
-      waf: 'Rellify',
-      action: shouldBlock ? 'BLOCK' : 'ALLOW',
-      ip: ip === 'unknown' ? 'unknown' : '[redacted]',
-      method: result.method,
-      path: result.pathname,
-      score: finalScore,
-      severity: finalSeverity,
-      detections: result.hits,
-      rateLimited: limit.blocked
-    }));
-
+    console.log(JSON.stringify({ waf: 'Rellify', action: shouldBlock ? 'BLOCK' : 'ALLOW', ip: ip === 'unknown' ? 'unknown' : '[redacted]', method: result.method, path: result.pathname, score: finalScore, severity: finalSeverity, detections: result.hits, rateLimited: limit.blocked }));
     if (shouldBlock && !result.pathname.startsWith('/waf.html')) {
       const target = new URL('/waf.html', request.url);
       target.searchParams.set('detected', limit.blocked ? 'Rate Limit' : (result.hits[0] || 'Suspicious Request'));
@@ -97,21 +67,12 @@ export default function middleware(request) {
       target.searchParams.set('count', String(result.hits.length));
       return Response.redirect(target, 307);
     }
-
-    const response = next({
-      headers: {
-        'X-Rellify-WAF': 'active',
-        'X-Rellify-Risk': String(finalScore),
-        'X-Rellify-Severity': finalSeverity,
-        'X-Rellify-Rate-Remaining': String(limit.remaining)
-      }
-    });
-
+    const response = next({ headers: { 'X-Rellify-WAF': 'active', 'X-Rellify-Risk': String(finalScore), 'X-Rellify-Severity': finalSeverity, 'X-Rellify-Rate-Remaining': String(limit.remaining) } });
     response.headers.set('X-Frame-Options', 'DENY');
     response.headers.set('X-Content-Type-Options', 'nosniff');
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-    response.headers.set('Content-Security-Policy', "default-src 'self'; img-src 'self' data: https:; media-src 'self' https: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+    response.headers.set('Content-Security-Policy', "default-src 'self'; img-src 'self' data: https:; media-src 'self' https: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
     return response;
   } catch (error) {
     console.error('[Rellify WAF]', error);
@@ -119,6 +80,4 @@ export default function middleware(request) {
   }
 }
 
-export const config = {
-  matcher: ['/((?!_next|favicon.ico|robots.txt|sitemap.xml).*)']
-};
+export const config = { matcher: ['/((?!_next|favicon.ico|robots.txt|sitemap.xml).*)'] };
