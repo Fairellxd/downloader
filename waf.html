@@ -14,8 +14,8 @@
   <div class="logo">Rellify</div>
   <div class="shield"><span>🛡️</span></div>
   <div class="spinner" id="spinner"></div>
-  <h1 id="title">Rellify WAF sedang memeriksa request...</h1>
-  <p class="status" id="status">Menganalisis pola request dan memeriksa indikator serangan umum.</p>
+  <h1 id="title">Yh, WAF-nya cuma loading...</h1>
+  <p class="status" id="status">Tunggu bentar, Rellify lagi ngecek request.</p>
   <div class="notice" id="notice">
     <h2 id="detected">⚠️ Request mencurigakan terdeteksi</h2>
     <p>Yah malah iseng tes WAF dari Rellify, lu bisa langsung refresh, jangan coba lagi, karna itu sia sia 👽</p>
@@ -37,14 +37,9 @@ const rules=[
 const hit=forced||rules.find(r=>r.re.test(sample))?.name;
 setTimeout(()=>{
   document.getElementById('spinner').style.display='none';
-  if(hit){
-    document.getElementById('title').textContent='Request diblokir oleh Rellify WAF';
-    document.getElementById('status').textContent='Pola request yang tidak aman terdeteksi.';
-    document.getElementById('detected').textContent='⚠️ Terdeteksi: '+hit;
-  }else{
-    document.getElementById('title').textContent='Rellify WAF aktif';
-    document.getElementById('status').textContent='Tidak ada pola serangan umum yang terdeteksi pada request ini.';
-  }
+  document.getElementById('title').textContent='Yah malah iseng tes WAF dari Rellify 😭';
+  document.getElementById('status').textContent=hit?'Pola request yang tidak aman terdeteksi.':'WAF selesai loading.';
+  if(hit)document.getElementById('detected').textContent='⚠️ Terdeteksi: '+hit;
   document.getElementById('notice').classList.add('show');
 },1600);
 </script>
