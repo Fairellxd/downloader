@@ -48,13 +48,20 @@ export default async function handler(req, res) {
             return res.status(404).json({ error: `URL ${format.toUpperCase()} tidak ditemukan.` });
         }
 
+        const duration = Number(data.duration ?? data.video?.duration ?? 0) || 0;
+        const thumbnail = data.cover || data.origin_cover || data.thumbnail || data.video?.cover || '';
+        const safeTitle = String(data.title || 'TikTok').trim().replace(/[\\/:*?"<>|]/g, '_').slice(0, 90) || 'TikTok';
+
         return res.status(200).json({
             success: true,
             platform: 'tiktok',
             format,
             media_url: mediaUrl,
             title: data.title || 'TikTok',
-            author: data.author?.unique_id ? `@${data.author.unique_id}` : '@unknown'
+            author: data.author?.unique_id ? `@${data.author.unique_id}` : '@unknown',
+            duration,
+            thumbnail,
+            filename: `${safeTitle}.${format}`
         });
     } catch (error) {
         console.error('TikTok API error:', error);
