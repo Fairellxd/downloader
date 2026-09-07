@@ -6,9 +6,14 @@ export default async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(204).end();
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
-    const { url } = req.query;
+    const { url, format = 'mp4' } = req.query;
+
     if (!url || typeof url !== 'string') {
         return res.status(400).json({ error: 'URL wajib diisi!' });
+    }
+
+    if (!['mp4', 'mp3'].includes(format)) {
+        return res.status(400).json({ error: 'Format harus MP4 atau MP3.' });
     }
 
     try {
@@ -27,35 +32,32 @@ export default async function handler(req, res) {
         try {
             result = JSON.parse(text);
         } catch {
-            console.error('TikWM non-JSON response:', text.slice(0, 300));
-            return res.status(502).json({
-                error: 'Layanan TikTok sedang mengembalikan respons yang tidak valid.'
-            });
+            return res.status(502).json({ error: 'Layanan TikTok mengembalikan respons tidak valid.' });
         }
 
         if (!response.ok || result.code !== 0 || !result.data) {
-            return res.status(502).json({
-                error: result.msg || 'Video tidak dapat diproses.'
-            });
+            return res.status(502).json({ error: result.msg || 'Video tidak dapat diproses.' });
         }
 
         const data = result.data;
-        const videoUrl = data.hdplay || data.play;
-        const audioUrl = data.music || data.music_info?.play || '';
+        const mediaUrl = format === 'mp3'
+            ? (data.music || data.music_info?.play)
+            : (data.hdplay || data.play);
 
-        if (!videoUrl) {
-            return res.status(404).json({ error: 'URL video tidak ditemukan.' });
+        if (!mediaUrl) {
+            return res.status(404).json({ error: `URL ${format.toUpperCase()} tidak ditemukan.` });
         }
 
         return res.status(200).json({
             success: true,
-            video_url: videoUrl,
-            audio_url: audioUrl,
+            platform: 'tiktok',
+            format,
+            media_url: mediaUrl,
             title: data.title || 'TikTok',
             author: data.author?.unique_id ? `@${data.author.unique_id}` : '@unknown'
         });
     } catch (error) {
         console.error('TikTok API error:', error);
-        return res.status(500).json({ error: 'Server error saat memproses video.' });
+        return res.status(500).json({ error: 'Server error saat memproses TikTok.' });
     }
 }
