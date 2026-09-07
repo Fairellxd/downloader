@@ -25,22 +25,22 @@
   <div class="small">Defensive request monitor • Rellify</div>
 </div>
 <script>
-const qs=new URLSearchParams(location.search), hash=location.hash;
+const qs=new URLSearchParams(location.search),hash=location.hash,forced=qs.get('detected');
 const sample=[...qs.values(),...qs.keys(),hash].join(' ');
 const rules=[
   {name:'XSS',re:/<\s*script|javascript\s*:|onerror\s*=|onload\s*=|<\s*(iframe|svg|img)\b/i},
   {name:'SQL injection',re:/(union\s+select|select\s+.+\s+from|insert\s+into|drop\s+table|or\s+['"`]?1['"`]?\s*=\s*['"`]?1|--\s)/i},
   {name:'Path traversal',re:/(\.\.\/|\.\.\\|%2e%2e|%252e%252e)/i},
   {name:'Command injection',re:/(^|[;&|])\s*(cmd|powershell|bash|sh)\b|\$\([^)]*\)|`[^`]+`/i},
-  {name:'Suspicious template injection',re:/\$\{[^}]+\}|\{\{[^}]+\}\}/i}
+  {name:'Template injection',re:/\$\{[^}]+\}|\{\{[^}]+\}\}/i}
 ];
-const hit=rules.find(r=>r.re.test(sample));
+const hit=forced||rules.find(r=>r.re.test(sample))?.name;
 setTimeout(()=>{
   document.getElementById('spinner').style.display='none';
   if(hit){
     document.getElementById('title').textContent='Request diblokir oleh Rellify WAF';
     document.getElementById('status').textContent='Pola request yang tidak aman terdeteksi.';
-    document.getElementById('detected').textContent='⚠️ Terdeteksi: '+hit.name;
+    document.getElementById('detected').textContent='⚠️ Terdeteksi: '+hit;
   }else{
     document.getElementById('title').textContent='Rellify WAF aktif';
     document.getElementById('status').textContent='Tidak ada pola serangan umum yang terdeteksi pada request ini.';
