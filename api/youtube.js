@@ -6,7 +6,8 @@ export default async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(204).end();
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
-    const { url, format = 'mp4' } = req.query;
+    const { url, format = 'mp4', quality = '720' } = req.query;
+
     if (!url || typeof url !== 'string') {
         return res.status(400).json({ error: 'URL YouTube wajib diisi!' });
     }
@@ -18,6 +19,9 @@ export default async function handler(req, res) {
     if (!['mp4', 'mp3'].includes(format)) {
         return res.status(400).json({ error: 'Format harus mp4 atau mp3.' });
     }
+
+    const allowedQuality = ['144', '240', '360', '480', '720', '1080', '1440', '2160', 'max'];
+    const videoQuality = allowedQuality.includes(String(quality)) ? String(quality) : '720';
 
     const cobaltUrl = process.env.COBALT_API_URL;
     if (!cobaltUrl) {
@@ -32,7 +36,8 @@ export default async function handler(req, res) {
             url,
             downloadMode: format === 'mp3' ? 'audio' : 'auto',
             audioFormat: 'mp3',
-            videoQuality: '720',
+            audioBitrate: '128',
+            videoQuality,
             youtubeVideoCodec: 'h264',
             youtubeVideoContainer: 'mp4',
             filenameStyle: 'pretty'
@@ -58,14 +63,14 @@ export default async function handler(req, res) {
             });
         }
 
-        if (!response.ok || data.status === 'error') {
-            const code = data.error?.code || '';
+        if (!response.ok || data.status === 'error' || data.status === 'rate-limit') {
             return res.status(502).json({
-                error: code ? `YouTube gagal diproses: ${code}` : 'Video YouTube tidak dapat diproses.'
+                error: data.text || 'Video YouTube tidak dapat diproses.'
             });
         }
 
-        if (!data.url) {
+        const mediaUrl = data.url || data.audio;
+        if (!mediaUrl) {
             return res.status(502).json({
                 error: 'Layanan YouTube tidak memberikan URL file.'
             });
@@ -73,9 +78,11 @@ export default async function handler(req, res) {
 
         return res.status(200).json({
             success: true,
-            url: data.url,
-            filename: data.filename || `youtube_${Date.now()}.${format}`,
+            platform: 'youtube',
             format,
+            media_url: mediaUrl,
+            title: data.filename || 'YouTube Media',
+            author: '',
             status: data.status
         });
     } catch (error) {
