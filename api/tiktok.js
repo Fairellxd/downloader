@@ -19,38 +19,79 @@ export default async function handler(req, res) {
     try {
         let normalizedUrl = url.trim();
 
-        // TikTok tracking/query parameters can make some resolver endpoints
-        // reject an otherwise valid video URL. Keep the actual path/video ID.
+        // Accept a TikTok URL pasted from a browser/share sheet.
+        const extracted = normalizedUrl.match(/https?:\\/\\/(?:www\\.|m\\.|vm\\.|vt\\.|v\\.)?tiktok\\.com\\/[^\\s<>"']+/i);
+        if (extracted) normalizedUrl = extracted[0].replace(/[),.;]+$/, '');
+
+        const originalUrl = normalizedUrl;
+
         try {
             const parsed = new URL(normalizedUrl);
-            const host = parsed.hostname.toLowerCase().replace(/^www\./, '');
-            if (host === 'tiktok.com' || host.endsWith('.tiktok.com')) {
-                normalizedUrl = `https://www.tiktok.com${parsed.pathname}`;
+            const host = parsed.hostname.toLowerCase();
+
+            if (!host.endsWith('tiktok.com')) {
+                return res.status(400).json({ error: 'URL harus berasal dari TikTok.' });
             }
+
+            // Short/share links contain their resolver token in the path.
+            // Never rebuild them as www.tiktok.com/path or the token is lost.
+            const isShortLink =
+                host === 'vm.tiktok.com' ||
+                host === 'vt.tiktok.com' ||
+                host === 'v.tiktok.com';
+
+            normalizedUrl = isShortLink
+                ? parsed.toString()
+                : `https://www.tiktok.com${parsed.pathname}`;
         } catch {
             return res.status(400).json({ error: 'URL TikTok tidak valid.' });
         }
 
-        const response = await fetch('https://www.tikwm.com/api/', {
-            method: 'POST',
-            headers: {
-                'User-Agent': 'Mozilla/5.0',
-                'Accept': 'application/json',
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({ url: normalizedUrl, hd: '1' })
-        });
+        async function requestTikwm(targetUrl) {
+            const response = await fetch('https://www.tikwm.com/api/', {
+                method: 'POST',
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36',
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    'Referer': 'https://www.tikwm.com/'
+                },
+                body: new URLSearchParams({ url: targetUrl, hd: '1' })
+            });
 
-        const text = await response.text();
-        let result;
-        try {
-            result = JSON.parse(text);
-        } catch {
-            return res.status(502).json({ error: 'Layanan TikTok mengembalikan respons tidak valid.' });
+            const text = await response.text();
+            let result = null;
+
+            try {
+                result = JSON.parse(text);
+            } catch {
+                result = null;
+            }
+
+            return { response, result };
+        }
+
+        // Try the cleaned URL first. If TikWM rejects it, retry once with
+        // the exact original URL because some share URLs need their query form.
+        let upstream = await requestTikwm(normalizedUrl);
+
+        if ((!upstream.result || upstream.result.code !== 0 || !upstream.result.data) &&
+            originalUrl !== normalizedUrl) {
+            upstream = await requestTikwm(originalUrl);
+        }
+
+        const { response, result } = upstream;
+
+        if (!result) {
+            return res.status(502).json({
+                error: 'Layanan TikTok mengembalikan respons tidak valid.'
+            });
         }
 
         if (!response.ok || result.code !== 0 || !result.data) {
-            return res.status(502).json({ error: result.msg || 'Media TikTok tidak dapat diproses.' });
+            return res.status(502).json({
+                error: result.msg || 'Media TikTok tidak dapat diproses.'
+            });
         }
 
         const data = result.data;
