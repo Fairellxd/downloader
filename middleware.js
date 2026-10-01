@@ -80,4 +80,4 @@ export default function middleware(request) {
   }
 }
 
-export const config = { matcher: ['/((?!_next|favicon.ico|robots.txt|sitemap.xml).*)'] };
+export const config = { matcher: ['/((?!api|_next|favicon.ico|robots.txt|sitemap.xml).*)'] };
