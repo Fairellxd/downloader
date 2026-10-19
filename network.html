@@ -1,22 +1,94 @@
-<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rellify • Network Test</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>body{margin:0;min-height:100vh;background:#08090d;color:#fff;font-family:Segoe UI,Arial;display:grid;place-items:center;padding:20px;box-sizing:border-box}.card{width:min(700px,100%);background:#11131a;border:1px solid #292d3a;border-radius:24px;padding:30px;text-align:center;box-sizing:border-box}.back{display:block;text-align:left;color:#aaa;text-decoration:none;margin-bottom:20px}.logo{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#ff0050,#8b5cf6,#00d9ff);-webkit-background-clip:text;color:transparent}.sub{color:#858b9b;margin:8px 0 30px}.speed{font-size:4rem;font-weight:800}.unit{color:#858b9b}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:25px 0}.stat{background:#191c25;border:1px solid #292d3a;border-radius:14px;padding:18px}.stat b{font-size:1.2rem;display:block}.stat span{color:#858b9b;font-size:.8rem}.btn{width:100%;padding:14px;border:0;border-radius:13px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:white;font-weight:800;font-size:1rem;cursor:pointer}.status{color:#858b9b;margin:18px 0;font-size:.85rem}@media(max-width:600px){.grid{grid-template-columns:1fr}.speed{font-size:3rem}}
-:root{--bg:#0b0c0d;--card:#131516;--input:#1b1e1d;--border:#303633;--text:#f4f3ee;--muted:#9ba39d;--accent:#c8a96b;--sage:#8b9b86}
-*{box-sizing:border-box}body{font-family:'DM Sans',sans-serif;background-image:radial-gradient(ellipse at 15% 4%,#c8a96b12,transparent 36%),radial-gradient(ellipse at 90% 90%,#8b9b8610,transparent 32%);color:var(--text)}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.15;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:42px 42px}
-.card{position:relative;overflow:hidden;background:var(--card);border-color:var(--border);border-radius:24px;box-shadow:0 24px 70px #0007;backdrop-filter:blur(18px);animation:riseIn .65s ease both;padding:32px}
-.card:before{content:"";position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,#e5c98b99,#8b9b8688,transparent)}
-.back{color:var(--muted);font-size:.9rem;transition:color .2s}.back:hover{color:var(--accent)}
-.logo{font-family:'Manrope',sans-serif;font-size:clamp(1.9rem,5vw,2.5rem);font-weight:800;letter-spacing:.04em;background:linear-gradient(120deg,#e5c98b,#c8a96b,#8b9b86);-webkit-background-clip:text}
-.sub{font-size:.95rem;letter-spacing:.02em;margin-bottom:28px}
-.speed{font-family:'Manrope',sans-serif;font-size:clamp(3.2rem,9vw,4.5rem);font-weight:800;letter-spacing:-.06em;background:linear-gradient(120deg,#f4f3ee,#c8a96b);-webkit-background-clip:text;color:transparent}
-.unit{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase}
-.grid{gap:12px;margin:25px 0}
-.stat{position:relative;background:linear-gradient(140deg,#c8a96b0b,transparent 65%),var(--input);border:1px solid var(--border);border-radius:15px;padding:20px 14px;transition:transform .2s,border-color .2s}
-.stat:hover{transform:translateY(-3px);border-color:#c8a96b88}
-.stat b{font-family:'Manrope',sans-serif;font-size:1.15rem;color:var(--text);letter-spacing:-.025em}
-.stat span{font-size:.7rem;letter-spacing:.13em;text-transform:uppercase}
-.btn{position:relative;overflow:hidden;width:100%;padding:15px;border:1px solid #c8a96b66;border-radius:14px;background:linear-gradient(110deg,#d8bc7c,#b18e4c);color:#151611;font-family:'Manrope',sans-serif;font-weight:800;letter-spacing:.01em;cursor:pointer;transition:transform .2s,box-shadow .2s,filter .2s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px #c8a96b26;filter:brightness(1.05)}.btn:disabled{opacity:.65;cursor:wait;transform:none}
-.status{padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--input);font-size:.85rem}
-@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:600px){.card{padding:23px 17px}.grid{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}}
-</style></head><body><main class="card"><a class="back" href="index.html">← Kembali ke Rellify</a><div class="logo">⌁ Network Test</div><p class="sub">Ukur koneksi internet kamu dari browser</p><div class="speed" id="speed">—</div><div class="unit">Mbps download</div><div class="grid"><div class="stat"><b id="down">—</b><span>Download</span></div><div class="stat"><b id="up">—</b><span>Upload</span></div><div class="stat"><b id="ping">—</b><span>Ping</span></div></div><div class="status" id="status">Siap melakukan tes</div><button class="btn" id="start">↗ Mulai Tes</button></main><script type="module">import SpeedTest from 'https://esm.unpkg.com/@cloudflare/speedtest@1.13.1?target=es2022';const $=id=>document.getElementById(id);$('start').onclick=()=>{const b=$('start');b.disabled=true;b.textContent='◌ Sedang menguji...';$('status').textContent='Mengukur latency, download, dan upload...';try{const st=new SpeedTest({autoStart:false,measurements:[{type:'latency',numPackets:8},{type:'download',bytes:1e6,count:2},{type:'upload',bytes:1e6,count:2}]});st.onResultsChange=()=>{const d=st.results.getDownloadBandwidth(),u=st.results.getUploadBandwidth(),p=st.results.getUnloadedLatency();if(Number.isFinite(d)){$('down').textContent=(d/1e6).toFixed(1)+' Mbps';$('speed').textContent=(d/1e6).toFixed(1)}if(Number.isFinite(u))$('up').textContent=(u/1e6).toFixed(1)+' Mbps';if(Number.isFinite(p))$('ping').textContent=Math.round(p)+' ms'};st.onFinish=r=>{const d=r.getDownloadBandwidth(),u=r.getUploadBandwidth(),p=r.getUnloadedLatency();if(Number.isFinite(d)){$('down').textContent=(d/1e6).toFixed(1)+' Mbps';$('speed').textContent=(d/1e6).toFixed(1)}if(Number.isFinite(u))$('up').textContent=(u/1e6).toFixed(1)+' Mbps';if(Number.isFinite(p))$('ping').textContent=Math.round(p)+' ms';$('status').textContent='Test selesai — ✓';b.disabled=false;b.textContent='↻ Tes Lagi'};st.onError=e=>{$('status').textContent='Test gagal: '+e;b.disabled=false;b.textContent='🚀 Mulai Test'};st.play()}catch(e){$('status').textContent='Speed test gagal dimuat.';b.disabled=false;b.textContent='🚀 Mulai Test'}};</script></body></html>
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rellify • Network Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#080b10;--panel:#10151d;--panel2:#151c25;--line:#29333b;--text:#f3f1e9;--muted:#87928f;--gold:#c8a96b;--gold2:#e5ce98;--sage:#8b9b86}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#c8a96b12,transparent 38%),radial-gradient(ellipse at 100% 90%,#8b9b8610,transparent 35%),var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;padding:28px}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:44px 44px}
+.shell{position:relative;isolation:isolate;max-width:1240px;min-height:calc(100vh - 56px);margin:auto;padding:25px 32px 22px;overflow:hidden;border:1px solid #343b3d;border-radius:28px;background:linear-gradient(145deg,#10151beF,#0c1119f7);box-shadow:0 35px 100px #0008;display:flex;flex-direction:column}
+.shell:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 50% 45%,#c8a96b0a,transparent 42%)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font:800 1.3rem 'Manrope',sans-serif;letter-spacing:.15em}.brand span{color:var(--gold)}.brand small{display:block;color:var(--muted);font:600 .65rem 'DM Sans',sans-serif;letter-spacing:.28em;margin-top:4px}.topnav{display:flex;gap:10px}.topnav a,.mini-btn{color:var(--muted);text-decoration:none;border:1px solid transparent;border-radius:11px;padding:10px 13px;font-size:.83rem;background:transparent;transition:.2s}.topnav a:hover,.mini-btn:hover{border-color:#c8a96b55;color:var(--gold2);background:#c8a96b0a}.mini-btn{cursor:pointer}
+.content{display:grid;grid-template-columns:minmax(150px,1fr) minmax(360px,1.9fr) minmax(190px,1fr);gap:26px;align-items:center;flex:1;padding:32px 0 22px}
+.side{display:flex;flex-direction:column;gap:13px}.eyebrow{font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:.19em;color:var(--gold);margin-bottom:3px}.info{padding:13px 14px;border:1px solid #29333b;border-radius:13px;background:#ffffff03}.info-label{font-size:.72rem;color:var(--muted);margin-bottom:5px}.info-value{font-size:.88rem;font-weight:600;overflow-wrap:anywhere}.info-value .sym{color:var(--gold);margin-right:8px}
+.center{text-align:center;min-width:0}.heading{font:700 clamp(1.45rem,3vw,2.2rem) 'Manrope',sans-serif;letter-spacing:.08em;margin:0 0 4px}.sub{color:var(--muted);font-size:.86rem;margin:0 0 2px}.gauge{width:min(100%,480px);margin:0 auto;position:relative}.gauge svg{display:block;width:100%;overflow:visible}.gauge-rings{fill:none;stroke:#ffffff08;stroke-width:1}.gauge-track{fill:none;stroke:#27313a;stroke-width:10;stroke-linecap:round}.gauge-progress{fill:none;stroke:url(#goldGrad);stroke-width:10;stroke-linecap:round;stroke-dasharray:0 1000;transition:stroke-dasharray .4s ease}.ticks line{stroke:#65706d;stroke-width:1.5;stroke-linecap:round}.ticks line.major{stroke:var(--gold);stroke-width:2}.ticks text{fill:#9ca6a0;font:12px 'DM Sans',sans-serif}.needle{transform-origin:200px 205px;transform:rotate(-130deg);transition:transform .45s cubic-bezier(.2,.7,.2,1)}.needle line{stroke:var(--gold2);stroke-width:3;stroke-linecap:round;filter:drop-shadow(0 0 5px #c8a96b66)}.needle circle{fill:var(--gold2)}.readout{position:absolute;left:0;right:0;top:51%;transform:translateY(-4%);pointer-events:none}.readout-icon{color:var(--gold);font-size:1.4rem}.speed{font:800 clamp(2.8rem,6vw,4.5rem)/1 'Manrope',sans-serif;letter-spacing:-.07em;margin:8px 0 4px;font-variant-numeric:tabular-nums}.speed-unit{font-size:.78rem;color:var(--muted);letter-spacing:.18em;text-transform:uppercase}.pingline{margin-top:18px;font-size:.83rem}.pingline strong{color:var(--gold2);font-weight:700}.gauge-foot{display:flex;justify-content:space-between;gap:14px;color:var(--muted);font-size:.73rem;margin:0 auto;max-width:390px;padding:0 10px}
+.stats{display:flex;flex-direction:column;gap:13px}.metric{border:1px solid #29333b;border-radius:17px;padding:19px 18px;background:linear-gradient(145deg,#c8a96b0b,transparent 75%),#141b25;transition:transform .2s,border-color .2s}.metric:hover{transform:translateY(-2px);border-color:#c8a96b66}.metric-head{display:flex;align-items:center;gap:9px;color:var(--gold2);font-size:.82rem;font-weight:600}.metric-head .sym{font-size:1.05rem}.metric-value{font:700 clamp(1.7rem,3vw,2.4rem) 'Manrope',sans-serif;letter-spacing:-.045em;margin:10px 0 2px;font-variant-numeric:tabular-nums}.metric-unit{font-size:.72rem;color:var(--muted);letter-spacing:.08em}.start-wrap{display:flex;justify-content:center;margin-top:8px}.start{border:1px solid #e5ce9888;border-radius:50%;width:70px;height:70px;background:linear-gradient(145deg,#1e2931,#131a22);color:var(--gold2);font-size:1.8rem;cursor:pointer;box-shadow:0 0 0 8px #c8a96b0a,0 10px 35px #0005;transition:transform .2s,box-shadow .2s}.start:hover{transform:translateY(-2px) rotate(-12deg);box-shadow:0 0 0 10px #c8a96b12,0 12px 35px #0007}.start:disabled{opacity:.55;cursor:wait;transform:none}.status{margin:14px auto 0;color:var(--muted);font-size:.82rem;min-height:22px}.status:before{content:"";display:inline-block;width:6px;height:6px;background:var(--sage);border-radius:50%;margin:0 8px 1px 0}.status.running:before{background:var(--gold);box-shadow:0 0 10px var(--gold);animation:pulse 1s infinite}.footer{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #29333b;padding-top:17px;color:var(--muted);font-size:.73rem}.footer strong{color:var(--gold2);font-weight:600}.foot-wave{display:flex;align-items:center;gap:3px;height:22px}.foot-wave i{display:block;width:3px;border-radius:5px;background:var(--sage);height:4px;opacity:.8}.running ~ .footer .foot-wave i{animation:wave .6s ease-in-out infinite alternate}.foot-wave i:nth-child(2n){animation-delay:.2s}.foot-wave i:nth-child(3n){animation-delay:.4s}
+@keyframes pulse{50%{opacity:.35}}@keyframes wave{to{height:17px;background:var(--gold)}}
+@media(max-width:900px){body{padding:14px}.shell{padding:22px}.content{grid-template-columns:1fr 1.6fr;gap:18px}.center{grid-column:2;grid-row:1 / span 2}.stats{grid-column:1;grid-row:2}.side{grid-column:1;grid-row:1}.metric{padding:14px}.metric-value{font-size:1.7rem}.info{padding:10px}}
+@media(max-width:620px){body{padding:0}.shell{min-height:100vh;border-radius:0;padding:18px 16px}.topnav a{font-size:0;padding:9px}.topnav a span{font-size:1rem}.content{display:flex;flex-direction:column;gap:19px;padding:28px 0 20px}.center{order:1;width:100%}.stats{order:2;width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.metric{padding:13px 10px;border-radius:13px}.metric-head{font-size:.7rem;gap:5px}.metric-value{font-size:1.35rem;margin-top:9px}.metric-unit{font-size:.62rem}.side{order:3;width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.side .eyebrow{grid-column:1/-1}.info{padding:11px}.info-value{font-size:.8rem}.gauge{max-width:420px}.heading{font-size:1.55rem}.sub{font-size:.8rem}.speed{font-size:3.2rem}.footer{font-size:.67rem}.start{width:62px;height:62px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top">
+<a href="index.html" class="brand" aria-label="Kembali ke Rellify" style="text-decoration:none;color:inherit">R<span>ELLIFY</span><small>NETWORK LAB</small></a>
+<nav class="topnav" aria-label="Navigasi"><a href="index.html"><span>⌂</span> Home</a><a href="games.html"><span>▦</span> Games</a></nav>
+<button class="mini-btn" id="reset" title="Reset hasil">↻ Reset</button>
+</header>
+<section class="content">
+<aside class="side">
+<div class="eyebrow">Connection details</div>
+<div class="info"><div class="info-label"><span class="sym">⌁</span> Connection</div><div class="info-value" id="connection">Mendeteksi…</div></div>
+<div class="info"><div class="info-label"><span class="sym">◷</span> Latency</div><div class="info-value" id="latencyInfo">Belum diuji</div></div>
+<div class="info"><div class="info-label"><span class="sym">▤</span> Browser</div><div class="info-value" id="browserInfo">Browser kamu</div></div>
+<div class="info"><div class="info-label"><span class="sym">◉</span> Test server</div><div class="info-value">Cloudflare Speed Test</div></div>
+</aside>
+<section class="center">
+<h1 class="heading">SPEED TEST</h1><p class="sub">Ukur performa koneksi internet kamu</p>
+<div class="gauge">
+<svg viewBox="0 0 400 280" role="img" aria-label="Speedometer kecepatan internet">
+<defs><linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b9b86"/><stop offset=".55" stop-color="#c8a96b"/><stop offset="1" stop-color="#e5ce98"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<circle class="gauge-rings" cx="200" cy="205" r="166"/><circle class="gauge-rings" cx="200" cy="205" r="145"/>
+<path class="gauge-track" id="track" d="M 70 270 A 145 145 0 1 1 330 270" pathLength="1000"/>
+<path class="gauge-progress" id="progress" d="M 70 270 A 145 145 0 1 1 330 270" pathLength="1000"/>
+<g class="ticks" id="ticks"></g>
+<g class="needle" id="needle"><line x1="200" y1="205" x2="200" y2="90"/><circle cx="200" cy="205" r="7"/></g>
+</svg>
+<div class="readout"><div class="readout-icon">⇵</div><div class="speed" id="speed">—</div><div class="speed-unit">Mbps download</div><div class="pingline"><strong>Ping</strong> &nbsp;<span id="pingInline">— ms</span></div></div>
+</div>
+<div class="gauge-foot"><span>0 Mbps</span><span id="scaleMax">100+ Mbps</span></div>
+<div class="start-wrap"><button class="start" id="start" aria-label="Mulai tes kecepatan" title="Mulai tes">↻</button></div>
+<div class="status" id="status" role="status" aria-live="polite">Siap melakukan tes</div>
+</section>
+<section class="stats" aria-label="Hasil tes">
+<div class="metric"><div class="metric-head"><span class="sym">↓</span> Download</div><div class="metric-value" id="down">—</div><div class="metric-unit">Mbps</div></div>
+<div class="metric"><div class="metric-head"><span class="sym">↑</span> Upload</div><div class="metric-value" id="up">—</div><div class="metric-unit">Mbps</div></div>
+<div class="metric"><div class="metric-head"><span class="sym">⌁</span> Ping</div><div class="metric-value" id="ping">—</div><div class="metric-unit">ms</div></div>
+</section>
+</section>
+<footer class="footer"><div><strong>RELLIFY</strong> · Network diagnostics</div><div class="foot-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div>Powered by <strong>Cloudflare</strong></div></footer>
+</main>
+<script type="module">
+import SpeedTest from 'https://esm.unpkg.com/@cloudflare/speedtest@1.13.1?target=es2022';
+const $=id=>document.getElementById(id);
+const state={running:false,instance:null};
+const format=(v,d=1)=>Number.isFinite(v)?v.toFixed(d):'—';
+function setStatus(text,running=false){$('status').textContent=text;$('status').classList.toggle('running',running)}
+function renderTicks(){const group=$('ticks');group.innerHTML='';for(let i=0;i<=40;i++){const a=(-130+i*6.5)*Math.PI/180;const major=i%5===0;const r1=major?157:162,r2=major?174:169;const x1=200+Math.cos(a)*r1,y1=205+Math.sin(a)*r1,x2=200+Math.cos(a)*r2,y2=205+Math.sin(a)*r2;const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('x1',x1);line.setAttribute('y1',y1);line.setAttribute('x2',x2);line.setAttribute('y2',y2);if(major)line.setAttribute('class','major');group.appendChild(line)}}
+function setGauge(mbps){const max=200;const ratio=Math.max(0,Math.min(1,(Number(mbps)||0)/max));$('needle').style.transform='rotate('+(-130+ratio*260)+'deg)';$('progress').style.strokeDasharray=(ratio*1000)+' 1000';$('scaleMax').textContent=mbps>200?'200+ Mbps':'200 Mbps'}
+function updateResults(results){const d=results.getDownloadBandwidth?.(),u=results.getUploadBandwidth?.(),p=results.getUnloadedLatency?.();if(Number.isFinite(d)){$('down').textContent=format(d/1e6);$('speed').textContent=format(d/1e6);setGauge(d/1e6)}if(Number.isFinite(u))$('up').textContent=format(u/1e6);if(Number.isFinite(p)){$('ping').textContent=Math.round(p);$('pingInline').textContent=Math.round(p)+' ms';$('latencyInfo').textContent=Math.round(p)+' ms'}}
+function resetUI(){['down','up','ping'].forEach(id=>$(id).textContent='—');$('speed').textContent='—';$('pingInline').textContent='— ms';$('latencyInfo').textContent='Belum diuji';$('needle').style.transform='rotate(-130deg)';$('progress').style.strokeDasharray='0 1000'}
+function finishButton(label='↻'){state.running=false;$('start').disabled=false;$('start').textContent=label}
+function runTest(){if(state.running)return;state.running=true;resetUI();$('start').disabled=true;$('start').textContent='…';setStatus('Menyiapkan tes koneksi…',true);
+try{
+const st=new SpeedTest({autoStart:false,measurements:[{type:'latency',numPackets:10},{type:'download',bytes:1e6,count:3},{type:'upload',bytes:1e6,count:3}]});
+state.instance=st;
+st.onRunningChange=running=>{if(running)setStatus('Mengukur ping, download, dan upload…',true)};
+st.onResultsChange=()=>updateResults(st.results);
+st.onFinish=results=>{updateResults(results);setStatus('Tes selesai. Hasil adalah perkiraan kondisi koneksi saat ini.');finishButton('↻')};
+st.onError=err=>{setStatus('Tes gagal dijalankan. Coba lagi atau periksa koneksi internet.');finishButton('↻');console.error('Cloudflare Speed Test:',err)};
+st.play();
+}catch(err){console.error(err);setStatus('Speed test tidak dapat dimuat. Periksa koneksi lalu coba lagi.');finishButton('↻')}
+}
+renderTicks();
+const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+$('connection').textContent=conn?(conn.effectiveType||conn.type||'Terhubung')+(conn.downlink?' · '+conn.downlink+' Mbps':''):'Browser tidak menyediakan detail jaringan';
+$('browserInfo').textContent=navigator.userAgentData?.brands?.map(x=>x.brand).filter(x=>!x.includes('Not')).join(', ')||(/Edg\//.test(navigator.userAgent)?'Microsoft Edge':/OPR\//.test(navigator.userAgent)?'Opera':/Chrome\//.test(navigator.userAgent)?'Chromium':/Firefox\//.test(navigator.userAgent)?'Firefox':/Safari\//.test(navigator.userAgent)?'Safari':'Browser');
+$('start').addEventListener('click',runTest);
+$('reset').addEventListener('click',()=>{if(state.running)return;resetUI();setStatus('Hasil direset. Siap melakukan tes.');finishButton('↻')});
+</script>
+</body></html>
