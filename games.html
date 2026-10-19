@@ -41,12 +41,56 @@ canvas{background:#101311;border-color:var(--border)}
 .target{background:linear-gradient(135deg,#e5c98b,#8b9b86);box-shadow:0 0 20px #c8a96b44}
 @keyframes riseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:520px){.top{align-items:flex-start;flex-direction:column}.tools{width:100%}.tools .btn{flex:1}.panel{padding:16px}}
+
+/* Rellify Arcade redesign */
+body{padding:28px;background:radial-gradient(ellipse at 12% 0%,#c8a96b14,transparent 36%),radial-gradient(ellipse at 90% 78%,#8b9b8610,transparent 32%),var(--bg)}
+.wrap{max-width:1240px}
+.top{padding:10px 0 20px;border-bottom:1px solid var(--border)}
+.brand-link{display:flex;align-items:center;gap:12px;color:var(--text);text-decoration:none}
+.brand-mark{display:grid;place-items:center;width:42px;height:42px;border:1px solid #c8a96b77;border-radius:13px;background:linear-gradient(145deg,#c8a96b22,#8b9b8610);color:var(--accent);font:800 1.3rem Manrope,sans-serif}
+.brand-copy{font:800 .98rem Manrope,sans-serif;letter-spacing:.16em}.brand-copy small{display:block;color:var(--muted);font:600 .63rem 'DM Sans',sans-serif;letter-spacing:.22em;margin-top:4px}
+.head{display:grid;grid-template-columns:1.25fr .75fr;align-items:center;gap:25px;text-align:left;padding:30px 0 26px;margin:0}
+.head-copy .eyebrow{font-size:.7rem;font-weight:700;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+.logo{font-size:clamp(2.2rem,5vw,4rem);line-height:1.05;letter-spacing:-.06em;background:linear-gradient(115deg,#f4f3ee 15%,#e5ce98 55%,#8b9b86);-webkit-background-clip:text;color:transparent}
+.sub{font-size:1rem;margin:12px 0 0;line-height:1.7;max-width:540px}
+.hero-card{min-height:155px;position:relative;overflow:hidden;border:1px solid #c8a96b44;border-radius:22px;padding:22px;background:radial-gradient(ellipse at 100% 0%,#c8a96b20,transparent 60%),linear-gradient(135deg,#171d23,#10151a);display:flex;flex-direction:column;justify-content:space-between}
+.hero-card:after{content:"▦";position:absolute;right:20px;bottom:-30px;font:800 9rem Manrope,sans-serif;color:#c8a96b0b}
+.hero-card .eyebrow{color:var(--accent);font-size:.68rem;letter-spacing:.17em;text-transform:uppercase}.hero-card strong{font:700 1.45rem Manrope,sans-serif;max-width:220px;line-height:1.35}.hero-card small{color:var(--muted);font-size:.78rem}
+.section-row{display:flex;justify-content:space-between;align-items:end;gap:14px;margin:8px 0 16px}.section-row h2{font:700 1.2rem Manrope,sans-serif;margin:0;letter-spacing:-.03em}.section-row p{margin:5px 0 0;color:var(--muted);font-size:.82rem}.count{font-size:.75rem;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:7px 11px;white-space:nowrap}
+.games{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.game{min-height:190px;position:relative;overflow:hidden;padding:0;background:linear-gradient(145deg,#171c21,#111517);border:1px solid var(--border);border-radius:19px;cursor:pointer;transition:transform .22s,border-color .22s,box-shadow .22s}
+.game:before{content:"";position:absolute;left:16px;right:16px;top:0;height:1px;background:linear-gradient(90deg,transparent,#c8a96b99,transparent)}
+.game:hover{transform:translateY(-5px);border-color:#c8a96b99;box-shadow:0 18px 38px #0004}
+.game:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.game-art{height:100px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 60%,var(--art-glow,#c8a96b22),transparent 60%),linear-gradient(135deg,#202721,#111719)}
+.game-art:before,.game-art:after{content:"";position:absolute;border:1px solid #c8a96b22;border-radius:50%;width:115px;height:115px}
+.game-art:after{width:82px;height:82px}
+.game-symbol{position:relative;z-index:1;display:grid;place-items:center;width:57px;height:57px;border:1px solid #c8a96b66;border-radius:18px;background:#0c1112cc;color:var(--accent);font:800 1.8rem Manrope,sans-serif;box-shadow:0 0 32px #c8a96b12}
+.game-index{position:absolute;z-index:2;top:12px;left:13px;font:700 .65rem Manrope,sans-serif;letter-spacing:.14em;color:#b9c0b8}
+.game-open{position:absolute;z-index:2;right:13px;top:12px;color:#c8a96b;font-size:1rem}
+.game-info{padding:15px 16px 17px}.game h2{font:700 .99rem Manrope,sans-serif;margin:0 0 6px;letter-spacing:-.025em}.game p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.5}.game-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:13px;font-size:.65rem;color:#9ba39d;text-transform:uppercase;letter-spacing:.12em}.game-meta span:last-child{color:var(--accent)}
+.panel{margin-top:22px;padding:22px;background:linear-gradient(145deg,#151a1d,#101416);border:1px solid #3a403d;border-radius:22px;box-shadow:0 24px 65px #0005;scroll-margin-top:18px}
+.panel:before{content:"";display:block;height:1px;margin:-22px 8% 20px;background:linear-gradient(90deg,transparent,#c8a96b77,transparent)}
+.panel h2{font-size:1.45rem}.panel .btn{min-height:42px}
+canvas{background:radial-gradient(ellipse at 50% 0%,#c8a96b0b,transparent 60%),#0c1113;border:1px solid #343d39}
+.reaction{background:radial-gradient(ellipse at 50% 0%,#c8a96b16,transparent 60%),#171e20;border:1px solid #36413c;min-height:220px}
+.board2048 .tile{background:linear-gradient(145deg,#1b2424,#141a1b);border-color:#344039;border-radius:12px}
+.memory .mem{background:linear-gradient(145deg,#202a27,#141a19);border:1px solid #39443b}
+.memory .mem.open,.memory .mem.done{background:linear-gradient(135deg,#e5ce98,#b99455);color:#151713;border-color:#e5ce98}
+.leader{border:1px solid #303b35;line-height:1.9}.leader strong{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase}
+.cell{font-family:Manrope,sans-serif;font-size:2rem}
+.target{border:2px solid #f4e4bc}
+.footer-games{display:flex;justify-content:space-between;gap:12px;align-items:center;color:var(--muted);font-size:.73rem;border-top:1px solid var(--border);margin-top:26px;padding-top:16px}
+@media(max-width:900px){body{padding:18px}.games{grid-template-columns:repeat(2,minmax(0,1fr))}.head{grid-template-columns:1fr .7fr}.game{min-height:180px}}
+@media(max-width:600px){body{padding:12px}.top{align-items:flex-start}.tools{flex-wrap:wrap;justify-content:flex-end}.tools .btn{font-size:.72rem;padding:9px}.head{grid-template-columns:1fr;padding:25px 0 22px}.hero-card{min-height:125px}.games{gap:10px}.game{min-height:170px}.game-art{height:82px}.game-info{padding:13px}.game h2{font-size:.9rem}.game p{font-size:.72rem}.game-meta{font-size:.58rem}.section-row{align-items:start}.panel{padding:16px}.panel:before{margin:-16px 8% 17px}.footer-games{font-size:.65rem}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><a class="back" href="index.html">← Kembali ke Rellify</a><div class="tools"><button class="btn alt" id="theme">◐ Mode terang/gelap</button><button class="btn alt" id="sound">♫ Suara: ON</button></div></div>
-<div class="head"><div class="logo">▦ Rellify Games</div><div class="sub">Pilih game di bawah lalu langsung main.</div></div>
+<div class="top"><a class="brand-link" href="index.html"><span class="brand-mark">R</span><span class="brand-copy">RELLIFY<small>ARCADE / MINI GAMES</small></span></a><div class="tools"><button class="btn alt" id="theme">◐ Mode terang/gelap</button><button class="btn alt" id="sound">♫ Suara: ON</button></div></div>
+<section class="head"><div class="head-copy"><div class="eyebrow">Rellify / Play Lab</div><div class="logo">Mini games.<br>Maximum focus.</div><div class="sub">Pilih tantangan, pecahkan skor terbaikmu, dan simpan progres di browser ini.</div></div><div class="hero-card"><div class="eyebrow">◈ Arcade collection</div><strong>Delapan tantangan. Satu tempat.</strong><small>REAKSI · LOGIKA · AKURASI · KETANGKASAN</small></div></section>
+<div class="section-row"><div><h2>Pilih permainan</h2><p>Tekan salah satu kartu untuk mulai bermain.</p></div><div class="count">08 GAMES / LOCAL SCORE</div></div>
 <div class="games">
 <div class="game" data-game="snake"><h2>⌁ Snake</h2><p>Panah / tombol sentuh.</p></div>
 <div class="game" data-game="2048"><h2>▦ 2048</h2><p>Gabungkan angka.</p></div>
@@ -66,6 +110,7 @@ canvas{background:#101311;border-color:var(--border)}
 <section class="panel" id="pong"><h2>∿ Pong</h2><div class="score">Score: <b id="pongScore">0</b> • Best: <b id="pongBest">0</b></div><canvas id="pongCanvas" width="600" height="340"></canvas><div class="hint">Gerakkan paddle kiri dengan mouse/touch atau tombol.</div><div class="touch"><button class="btn alt" id="pUp">↑</button><button class="btn alt" id="pDown">↓</button></div><button class="btn" id="pongRestart">↻ Mulai ulang</button><div class="leader" id="pongLead"></div></section>
 <section class="panel" id="flappy"><h2>⌃ Sky Hopper</h2><div class="score">Score: <b id="flyScore">0</b> • Best: <b id="flyBest">0</b></div><canvas id="flyCanvas" width="420" height="600"></canvas><div class="hint">Space / klik / tap untuk naik.</div><button class="btn" id="flyRestart">↻ Mulai ulang</button><div class="leader" id="flappyLead"></div></section>
 </div>
+<footer class="footer-games"><span>RELLIFY PLAY LAB</span><span>Skor tersimpan lokal di browser kamu</span><span>⌁ PLAY / REPEAT</span></footer>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
@@ -79,7 +124,7 @@ function renderLead(k){const el=$(k+'Lead');if(!el)return;let a=[];try{a=JSON.pa
 $('sound').textContent='♫ Suara: '+(sound?'ON':'OFF');$('sound').onclick=()=>{sound=!sound;localStorage.setItem('rellifySound',sound?'on':'off');$('sound').textContent='♫ Suara: '+(sound?'ON':'OFF');beep(600)};
 let light=localStorage.getItem('rellifyTheme')==='light';if(light)document.body.classList.add('light');$('theme').onclick=()=>{light=!light;document.body.classList.toggle('light',light);localStorage.setItem('rellifyTheme',light?'light':'dark')};
 function openGame(id){panels.forEach(p=>p.classList.remove('active'));const p=$(id);if(p)p.classList.add('active');renderLead(id)}
-document.querySelectorAll('.game').forEach(g=>g.addEventListener('click',()=>{openGame(g.dataset.game);beep(520)}));
+document.querySelectorAll('.game').forEach(g=>{const launch=()=>{openGame(g.dataset.game);beep(520);$(g.dataset.game).scrollIntoView({behavior:'smooth',block:'start'})};g.addEventListener('click',launch);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();launch()}})});
 
 let snake=[],snakeDir={x:1,y:0},snakeFood={x:15,y:10},snakeTimer=null;const snakeCanvas=$('snakeCanvas'),snakeCtx=snakeCanvas.getContext('2d');
 function drawSnake(){snakeCtx.clearRect(0,0,400,400);snakeCtx.fillStyle='#ff0050';snakeCtx.fillRect(snakeFood.x*20,snakeFood.y*20,18,18);snakeCtx.fillStyle='#8b5cf6';snake.forEach(p=>snakeCtx.fillRect(p.x*20,p.y*20,18,18))}
